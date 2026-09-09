@@ -105,11 +105,12 @@ invocarla.
 
 ## Checklist de publicación (MIT-clean)
 
-- [ ] `git grep -iE "api[_-]?key|token|secret|password|BEGIN .*PRIVATE" HEAD $(git rev-list --all)` → vacío
-- [ ] Sin rutas absolutas de la máquina de origen en src/docs/tests
-- [ ] Sin lore privado (URLs internas, agentes internos, diarios, lógica de negocio)
-- [ ] verify.m pasa en PDB desechable desde entorno limpio (sin servicios externos)
-- [ ] Harness corre en venv limpio con solo clone lumen-protocol (validado 2026-09: status+audit OK)
-- [ ] README EN/ES + LICENSE + SECURITY + CONTRIBUTING + CHANGELOG presentes
-- [ ] Dependencia lumen-protocol declarada (MIT) + versión/commit de referencia
-- [ ] Identity ASCII ≤1400 chars sincronizada entre src/astrid.m y personalities/astrid.md
+- [x] `git grep` secretos historia completa → vacío (2026-09-09)
+- [x] Sin rutas absolutas de la máquina de origen en src/docs/tests
+- [x] Sin lore privado (URLs internas, agentes internos, diarios, lógica de negocio)
+- [x] verify.m pasa en PDB desechable desde entorno limpio (sin servicios externos)
+- [x] Harness corre en venv limpio con solo clone lumen-protocol (validado 2026-09: status+audit OK)
+- [x] Suite completa `python tests/run_tests.py` → 12/12 verde (2026-09-09)
+- [x] README EN/ES + LICENSE + SECURITY + CONTRIBUTING + CHANGELOG presentes
+- [x] Dependencia lumen-protocol declarada (MIT) + versión/commit de referencia
+- [x] Identity ASCII 646 chars sincronizada entre src/astrid.m y personalities/astrid.md (test automatizado)

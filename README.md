@@ -63,11 +63,16 @@ Reference for this version: lumen-protocol `main` (2026-09).
    D INIT^ASTRID      ; fill-missing, idempotent
    D ASTRID^ASTRID    ; status
    ```
-3. Verify (throwaway PDB, no external services):
-   ```m
-   D VERIFY^VERIFY    ; → PASS astrid verificada
+3. Verify (throwaway PDB, no external services) — **full suite, one command**:
+   ```bash
+   python tests/run_tests.py    # 12 checks: INIT/status/VERIFY/AUDIT + identity
+                                # sync + template + echo regressions → all green
    ```
-   or via the harness:
+   or the individual M checks:
+   ```m
+   D VERIFY^VERIFY    ; → PASS astrid verificado
+   ```
+   or via the harness (status / demo audit against any local PDB):
    ```bash
    python harness/astrid_harness.py status
    python harness/astrid_harness.py audit --ns ^MYNS
