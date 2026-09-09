@@ -31,6 +31,14 @@ versioning.
   PDB; header must say `evidence=true`; every `claim|` line must have a
   source and exactly 5 fields; the `evidence_routine` contract must be
   seeded after INIT.
+- **Ingest demo (source → PDB → audit)**: `INGEST^ASTRID(origen, raw)`
+  appends external events to `^ASTRID("inbox", <origen>, <seq>)`; the
+  digest emits inbox claims (`claim|counter|^ASTRID(inbox,github)|...`), so
+  Astrid audits the incoming stream with her normal contract.
+  `examples/ingest/ingest_demo.py` is a stdlib-only webhook (POST → PDB →
+  digest); `docs/INGESTION.md` (+ ES) documents the pattern. The suite grew
+  to 18 checks, covering the ingest loop (verified end-to-end: events POSTed
+  to the demo webhook show up as inbox claims in the digest).
 
 ### Fixed
 - `$O(...)` nested as a subscript broke EVIDENCE (M-Light parser limit):

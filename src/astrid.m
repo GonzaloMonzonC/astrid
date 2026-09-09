@@ -98,7 +98,7 @@ COUNT(ns) ; count subnodes under ^PERSONALITY("astrid",ns,*) — M-Light compati
        ; de datos del LLM del chat. Cada claim cita su source (global leido) y su
        ; d=$D. Sin claim sin source. La rutina nunca escribe. Secciones: estado,
        ; ^ANGI, routing, ^SPACE, ^MVM, ^QUANTUM. Ver docs/EVIDENCE_SCHEMA.md.
-       N ev,mode,n,k,vo,al,lw,ag,s,a,nc,nj,q,uk,d
+       N ev,mode,n,k,vo,al,lw,ag,s,a,nc,nj,q,uk,d,u
        S mode=$G(^ACTIVE,"creative")
        S ev="Astrid v"_$G(^PERSONALITY("astrid","version"))_" | active="_$G(^PERSONALITY("astrid","is_active"))_" | mode activo="_mode_" | evidence=true"
        S d=$D(^ACTIVE) S ev=ev_$C(10)_"claim|mode|^ACTIVE|"_$G(^ACTIVE)_"|"_d
@@ -128,6 +128,12 @@ COUNT(ns) ; count subnodes under ^PERSONALITY("astrid",ns,*) — M-Light compati
        S d=$D(^QUANTUM("job")) S ev=ev_$C(10)_"claim|counter|^QUANTUM(job)|"_nj_"|"_d
        S uk=$O(^QUANTUM("colapso",""),-1)
        S d=$D(^QUANTUM("colapso",uk)) S ev=ev_$C(10)_"claim|entry|^QUANTUM(colapso,ultimo)|idx="_uk_" raw="_$E($G(^QUANTUM("colapso",uk)),1,110)_"|"_d
+       S k=$O(^ASTRID("inbox",""))
+       I k="" S d=$D(^ASTRID("inbox")) S ev=ev_$C(10)_"claim|state|^ASTRID(inbox)|vacio|"_d
+       F  Q:k=""  D
+       . S u=$O(^ASTRID("inbox",k,""),-1)
+       . S d=$D(^ASTRID("inbox",k,u)) S ev=ev_$C(10)_"claim|counter|^ASTRID(inbox,"_k_")|eventos="_u_"|"_d
+       . S k=$O(^ASTRID("inbox",k))
        S d=$D(^SESSION)
        I d=0 S ev=ev_$C(10)_"claim|state|^SESSION|sin overrides de modo por sesion|0"
        E  S ev=ev_$C(10)_"claim|state|^SESSION|overrides de modo presentes|"_d
@@ -153,3 +159,10 @@ AUDIT ; demo audit: namespace dinamico (observacion -> implicacion -> pregunta)
        W !,"[ASTRID] implicacion: si n=0 o n crece sin control, algo no cuadra con el estado esperado"
        W !,"[ASTRID] pregunta: ^",$P(ns,"^",2)," deberia tener entradas? (confirma con el operador antes de actuar)"
        Q
+
+INGEST(origen,raw) ; append de un evento externo al inbox (webhook demo)
+       ; ^ASTRID("inbox",origen,seq)=raw — secuencia por origen.
+       N s
+       S s=$O(^ASTRID("inbox",origen,""),-1)+1
+       S ^ASTRID("inbox",origen,s)=raw
+       Q s

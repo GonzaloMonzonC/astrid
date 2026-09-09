@@ -133,10 +133,18 @@ necesita el fix de M-Light del commit `243e74c` o posterior).
    La salida esperada empieza con `Astrid v0.2.0 | active=1 | ... | evidence=true`
    seguida de líneas `claim|...` (ver la muestra más arriba).
 4. Suite completa contra un MVM real sobre una PDB desechable — sin servicios
-   externos, **16 checks**:
+   externos, **18 checks** (incluye el bucle de inbox de INGEST):
    ```bash
    python tests/run_tests.py
    ```
+5. Demo de ingest (fuente externa → PDB → auditado):
+   ```bash
+   python examples/ingest/ingest_demo.py --db /tmp/ingest.db
+   curl -X POST "http://127.0.0.1:8787/hook?origen=github" \
+        -H "Content-Type: application/json" -d '{"event": "push", "ref": "main"}'
+   curl "http://127.0.0.1:8787/digest"
+   ```
+   Ver [`docs/INGESTION.es.md`](docs/INGESTION.es.md).
 
 ## Roadmap
 
@@ -144,7 +152,7 @@ necesita el fix de M-Light del commit `243e74c` o posterior).
 - [x] Evidence hook en producción — el chat responde solo desde `EVIDENCE^ASTRID`;
       `evidence:false` visible (incidentes en CHANGELOG)
 - [x] Emisor de schema v1 — digest como afirmaciones parseables (listo para verificador)
-- [x] Canario de evidencia en la suite de tests (16 checks)
+- [x] Canario de evidencia en la suite de tests (18 checks)
 - [x] Harness verificador — `tests/verify_claims.py` (AC-1..AC-4): formato de
       claims, fuentes, kinds conocidos, estabilidad ante estados idénticos
 - [ ] Anclaje de notaría — digest firmado con dirección de contenido (cid +
@@ -179,6 +187,7 @@ astrid/
 │   └── astrid_harness.py  Runner de status/seed/evidence/verify/audit
 ├── template/            Deriva un nuevo agente: render.py + AGENT.*.tpl
 ├── examples/echo        Agente derivado generado por el template (regresión)
+├── examples/ingest      Demo webhook: fuente externa → PDB → claims de inbox en el digest
 ├── docs/
 │   ├── DESIGN.md        EN — ficha de identidad, contrato de agente, ciclo, checklist de publicación
 │   ├── DESIGN.es.md     ES — diseño, contrato de agente, ciclo
@@ -186,16 +195,20 @@ astrid/
 │   ├── STORY.es.md      ES — la historia de lanzamiento
 │   ├── EVIDENCE_SCHEMA.md       EN — digest schema v1 + contrato de notaría
 │   ├── EVIDENCE_SCHEMA.es.md    ES — esquema del digest + contrato de notaría
+│   ├── INGESTION.md     EN — fuentes externas → PDB → auditadas por Astrid (demo)
+│   ├── INGESTION.es.md  ES — fuentes externas → PDB → auditadas por Astrid
 │   ├── BUILD_YOUR_OWN.md        EN — guía paso a paso para construir un agente derivado
 │   └── BUILD_YOUR_OWN.es.md     ES — guía paso a paso para un agente derivado
 └── tests/
-    ├── run_tests.py     Suite completa, 16 checks, un comando
+    ├── run_tests.py     Suite completa, 18 checks, un comando
+    ├── verify_claims.py Harness verificador de los claims del digest (AC-1..AC-4)
     └── verify.m         Verificación: la identidad existe, habla, opera
 ```
 
 **Más lecturas**: [DESIGN.es.md](docs/DESIGN.es.md) (por qué está construida
 así) · [STORY.es.md](docs/STORY.es.md) (la historia de lanzamiento con la
-auditoría cuántica real) · [EVIDENCE_SCHEMA.es.md](docs/EVIDENCE_SCHEMA.es.md)
+auditoría cuántica real) · [INGESTION.es.md](docs/INGESTION.es.md) (fuentes
+externas → PDB → auditadas) · [EVIDENCE_SCHEMA.es.md](docs/EVIDENCE_SCHEMA.es.md)
 (el contrato de notaría) · [BUILD_YOUR_OWN.es.md](docs/BUILD_YOUR_OWN.es.md)
 (construye un agente derivado).
 

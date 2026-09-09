@@ -14,10 +14,12 @@ Checks:
      claim| line has a source and exactly 5 fields (schema v1)
   6. evidence_routine contract seeded: ^PERSONALITY("astrid","evidence_routine")
      == "EVIDENCE^ASTRID" after INIT
-  7. Identity sync: src/astrid.m identity line == personalities/astrid.md
+  7. INGEST demo: an external event lands in ^ASTRID("inbox",<origen>) and
+     the digest emits the inbox claims
+  8. Identity sync: src/astrid.m identity line == personalities/astrid.md
      ASCII block; pure ASCII; 600–1400 chars
-  8. Template regression: render a scratch agent → INIT → VERIFY PASS
-  9. examples/echo regression: INIT → VERIFY PASS
+  9. Template regression: render a scratch agent → INIT → VERIFY PASS
+  10. examples/echo regression: INIT → VERIFY PASS
 
 Usage:  python tests/run_tests.py          (exit 0 = all green)
 """
@@ -113,12 +115,20 @@ def main() -> int:
     # 6. evidence_routine contract seeded by INIT
     out = run('W $G(^PERSONALITY("astrid","evidence_routine"))')
     check("evidence_routine sembrado", "EVIDENCE^ASTRID" in out, out[:120])
-    # 7. Identity sync (M ↔ MD), ASCII, longitud
+    # 7. INGEST demo (external event -> inbox -> digest sees it)
+    out = run('W $$INGEST^ASTRID("github","evt:{val:1}")')
+    check("INGEST escribe inbox", "1" in out, out[:80])
+    run('W $$INGEST^ASTRID("github","evt:{val:2}")')
+    run('W $$INGEST^ASTRID("webhook","evt:{val:3}")')
+    out = run('W $$EVIDENCE^ASTRID()')
+    check("digest ve inbox github", "claim|counter|^ASTRID(inbox,github)|eventos=2|1" in out, out[:200])
+    check("digest ve inbox webhook", "claim|counter|^ASTRID(inbox,webhook)|eventos=1|1" in out, out[:200])
+    # 9. Identity sync (M ↔ MD), ASCII, longitud
     im, imd = identity_from_m(), identity_from_md()
     check("identity M == MD", im == imd, f"M len={len(im)} MD len={len(imd)}")
     check("identity ASCII", bool(im) and all(ord(c) < 128 for c in im), "no-ASCII")
     check("identity 600-1400", 600 <= len(im) <= 1400, f"len={len(im)}")
-    # 8. Template regression: scratch agent
+    # 10. Template regression: scratch agent
     with tempfile.TemporaryDirectory() as td:
         tdp = Path(td)
         idf = tdp / "id.txt"
@@ -132,7 +142,7 @@ def main() -> int:
         run('D INIT^PROBE')
         out = run('D VERIFY^VERIFY("probe")')
         check("template render + INIT + VERIFY", "PASS probe" in out, out[:120])
-    # 9. examples/echo regression
+    # 11. examples/echo regression
     run('D INIT^ECHO')
     out = run('D VERIFY^VERIFY("echo")')
     check("echo (derivado real) VERIFY", "PASS echo" in out, out[:120])
