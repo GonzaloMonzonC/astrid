@@ -4,6 +4,28 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the repo uses semantic
 versioning.
 
+## [0.1.1] — 2026-09-09 (production fix, not published)
+
+### Fixed
+- `AUDIT^ASTRID` contaba 0 entradas en Poli real: usaba la forma de DOS
+  arrobas `$O(@ns@(k))`, que no es MSM canónico. La forma correcta es UNA
+  arroba (`@ns(k)` con `ns="^ANGI"`), implementada en el runtime M-Light
+  (commit `243e74c` lumen-protocol: name indirection en `$O`/`$D`/`$G`/
+  SET/KILL + comando `X`/`XECUTE`, que tampoco existía). Verificado en Poli
+  producción: primera auditoría real dinámica (^ANGI → 1 entrada de primer
+  nivel — `metrics`).
+
+### Known — producción 2026-09-09 (prueba de voz)
+El chat con la personalidad (`mode=astrid`, /v1/chat) responde con voz
+perfecta pero **no ejecuta sus rutinas M**: el fallback LLM describe
+"Ejecutando rutina AST-AUDIT/01" e inventa evidencia (`$DATA(^ANGI)=0`,
+namespaces `%SYS`/`CLAB`, error `M67`, `ZALLOCATE`) que contradice el
+resultado real de `AUDIT^ASTRID` (^ANGI sí existe). Violación de su regla 1
+("operar solo sobre datos registrados"). Pendiente: inyectar la salida real
+de sus rutinas (harness) en el contexto del LLM antes de responder, o que el
+router de chat de Poli ejecute `D AUDIT^ASTRID` y le pase el output como
+evidencia.
+
 ## [0.1.0] — 2026-09-09 (pre-publication)
 
 ### Added

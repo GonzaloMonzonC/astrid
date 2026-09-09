@@ -92,15 +92,17 @@ COUNT(ns) ; count subnodes under ^PERSONALITY("astrid",ns,*) — M-Light compati
        . S k=$O(^PERSONALITY("astrid",ns,k))
        Q n
 
-AUDIT ; demo: audit a namespace (observacion -> implicacion -> pregunta)
-       ; usage: D AUDIT^ASTRID^ASTRID("^ANGI")  or  D AUDIT^ASTRID (default ^ANGI)
+AUDIT ; demo audit: namespace dinamico (observacion -> implicacion -> pregunta)
+       ; Name indirection MSM (UNA arroba): @ns("") / @ns(k) con ns="^ANGI".
+       ; Soportada por M-Light desde 2026-09-09 (commit 243e74c, igual que
+       ; XECUTE) — verificada en Poli produccion via ^ROUTINE en caliente.
        N ns,k,n
        S ns=$G(^ASTRID("audit_ns"),"^ANGI")
        S n=0
-       S k=$O(@ns@(""))
+       S k=$O(@ns(""))
        F  Q:k=""  D
        . S n=n+1
-       . S k=$O(@ns@(k))
+       . S k=$O(@ns(k))
        W !,"[ASTRID] observacion: ",ns," tiene ",n," entradas de primer nivel"
        W !,"[ASTRID] implicacion: si n=0 o n crece sin control, algo no cuadra con el estado esperado"
        W !,"[ASTRID] pregunta: ^",$P(ns,"^",2)," deberia tener entradas? (confirma con el operador antes de actuar)"
