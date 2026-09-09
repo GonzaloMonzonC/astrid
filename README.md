@@ -128,7 +128,7 @@ M-Light fix of commit `243e74c` or later).
    Expected output starts with `Astrid v0.2.0 | active=1 | ... | evidence=true`
    followed by `claim|...` lines (see the sample above).
 4. Full suite against a real MVM on a throwaway PDB — no external services,
-   **18 checks** (includes the INGEST inbox loop):
+   **20 checks** (INGEST inbox loop + MCP register):
    ```bash
    python tests/run_tests.py
    ```
@@ -147,7 +147,7 @@ M-Light fix of commit `243e74c` or later).
 - [x] Evidence hook in production — chat answers only from `EVIDENCE^ASTRID`;
       `evidence:false` visible (incidents in CHANGELOG)
 - [x] Schema v1 emitter — digest as parseable claims (verifier-ready)
-- [x] Evidence canary in the test suite (18 checks)
+- [x] Evidence canary in the test suite (20 checks)
 - [x] Verifier harness — `tests/verify_claims.py` (AC-1..AC-4): claim
       format, sources, known kinds, stability across identical states
 - [x] Ingest demo — external events → PDB inbox → digest claims
@@ -196,7 +196,7 @@ astrid/
 │   ├── BUILD_YOUR_OWN.md        EN — step-by-step guide to build a derived agent
 │   └── BUILD_YOUR_OWN.es.md     ES — guía paso a paso para un agente derivado
 └── tests/
-    ├── run_tests.py     Full suite, 18 checks, one command
+    ├── run_tests.py     Full suite, 20 checks, one command
     ├── verify_claims.py Verifier harness for the digest claims (AC-1..AC-4)
     └── verify.m         Verification: identity exists, speaks, operates
 ```

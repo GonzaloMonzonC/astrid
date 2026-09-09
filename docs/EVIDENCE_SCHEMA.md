@@ -4,9 +4,9 @@ _How Astrid's registered evidence becomes a machine-readable claim._
 
 Status: **emitter in production (2026-09-09, verified on the real MVM)**.
 `EVIDENCE^ASTRID` emits parseable claims `claim|<kind>|<source>|<value>|<d>`
-(15 + k, k = ^SPACE entries; 18 in production). The digest is a canary in
-the test suite (16 checks). Pending: verifier harness (AC-2..AC-4 below)
-and the anchor (section 3).
+(production digest ≈ 25 claims with the 5-worker MCP register). The digest
+is a canary in the test suite (20 checks). Pending: verifier harness
+(AC-2..AC-4 below) and the anchor (section 3).
 
 ---
 
@@ -19,10 +19,10 @@ the routine in the real MVM, and prepends its stdout to the system prompt as
 `"evidence": false` — visible by contract, never hidden.
 
 Current digest shape — schema v1, one claim per line (truncated for
-readability; 19 claims per digest in production):
+readability; ≈25 claims per digest in production):
 
 ```
-Astrid v0.2.0 | active=1 | mode activo=astrid | evidence=true
+Astrid v0.3.0 | active=1 | mode activo=astrid | evidence=true
 claim|mode|^ACTIVE|astrid|1
 claim|counter|^ANGI(level1)|1|10
 claim|metric|^ANGI(metrics,agents_online)|{"value": 12, "updated": "2026-09-09T18:25:23Z"}|1
@@ -31,11 +31,21 @@ claim|config|^SPACE(ASI)|127.0.0.1 :9102|10
 claim|counter|^QUANTUM(colapso)|119|10
 claim|entry|^QUANTUM(colapso,ultimo)|idx=119 raw={"idx": 119, "ts": "...", "backend": "Tuna-17"}|1
 claim|note|^VIRTUAL|no existe (la virtualizacion vive en ^MVM)|0
+claim|counter|^SYS(MCP)|servers=5|10
+claim|config|^SYS(MCP,worker1)|type=http url=https://worker1.internal.example/mcp|1
 REGLA: responde SOLO con estos datos registrados; ...
 ```
 
 Each line is a **claim with a visible source** (the global it was read
 from). That is the seed of the notary contract.
+
+Since 0.3.0 the digest also audits the **device-MCP register**
+(`^SYS("MCP", <server>, url|type)`) — the mesh workers seeded by the
+operator for `$DEVICE("mcp:call", ...)`. Astrid therefore sees the wiring
+of her cognitive OS (which workers exist and how to reach them) under the
+same read-only evidence contract. Live reachability is NOT part of the
+digest: it would require outbound device calls per chat turn. The register
+is the fact; a health probe is a separate routine.
 
 ## 2. Schema v1 (emitting in production)
 

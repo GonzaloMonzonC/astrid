@@ -4,6 +4,20 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the repo uses semantic
 versioning.
 
+## [0.3.0] — 2026-09-09
+
+### Added
+- **Cognitive OS wiring visible in the digest**: `EVIDENCE^ASTRID` audits
+  `^SYS("MCP")` — the device-MCP register where the operator seeds the mesh
+  workers (`url` + `type` + `hmac_key` per server). The digest emits
+  `claim|counter|^SYS(MCP)|servers=N|d` plus one
+  `claim|config|^SYS(MCP,<srv>)|type=... url=...|d` per registered worker.
+  Astrid sees the wiring of her cognitive OS (the workers behind
+  `$DEVICE("mcp:call", ...)`) under the same read-only evidence contract.
+  Live reachability stays out of the digest by design (would require
+  outbound calls per chat turn) — the register is the fact. Test suite
+  18 → 20 checks (MCP register visible + per-server claim).
+
 ## [0.2.0] — 2026-09-09 (published on GitHub, main)
 
 ### Added

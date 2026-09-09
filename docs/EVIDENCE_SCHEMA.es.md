@@ -6,7 +6,7 @@ _Cómo la evidencia registrada de Astrid se convierte en un claim legible por m�
 
 Status: **emisor en producción (2026-09-09, verificado en el MVM real)**.
 `EVIDENCE^ASTRID` emite claims `claim|<kind>|<source>|<value>|<d>`
-parseables (15 + k, k = entradas de ^SPACE; 18 en producción). El digest es canario de la suite (16 checks). Pendiente: verifier harness (AC-2..AC-4)
+parseables (digest de producción ≈ 25 claims con el registro MCP de 5 workers). El digest es canario de la suite (20 checks). Pendiente: verifier harness (AC-2..AC-4)
 y el anclaje (sección 3).
 
 ---
@@ -20,10 +20,10 @@ como **EVIDENCIA REGISTRADA**. Si la ejecución falla o queda vacía, la
 respuesta lleva `"evidence": false` — visible por contrato, nunca oculto.
 
 Forma actual del digest — schema v1, un claim por línea (truncado para
-legibilidad; 19 claims por digest en producción):
+legibilidad; ≈25 claims por digest en producción):
 
 ```
-Astrid v0.2.0 | active=1 | mode activo=astrid | evidence=true
+Astrid v0.3.0 | active=1 | mode activo=astrid | evidence=true
 claim|mode|^ACTIVE|astrid|1
 claim|counter|^ANGI(level1)|1|10
 claim|metric|^ANGI(metrics,agents_online)|{"value": 12, "updated": "2026-09-09T18:25:23Z"}|1
@@ -32,11 +32,21 @@ claim|config|^SPACE(ASI)|127.0.0.1 :9102|10
 claim|counter|^QUANTUM(colapso)|119|10
 claim|entry|^QUANTUM(colapso,ultimo)|idx=119 raw={"idx": 119, "ts": "...", "backend": "Tuna-17"}|1
 claim|note|^VIRTUAL|no existe (la virtualizacion vive en ^MVM)|0
+claim|counter|^SYS(MCP)|servers=5|10
+claim|config|^SYS(MCP,worker1)|type=http url=https://worker1.internal.example/mcp|1
 REGLA: responde SOLO con estos datos registrados; ...
 ```
 
 Cada línea es un **claim con una fuente visible** (el global del que se leyó).
 Esa es la semilla del contrato de notaría.
+
+Desde 0.3.0 el digest también audita el **registro del device MCP**
+(`^SYS("MCP", <server>, url|type)`) — los workers de la malla que el
+operador siembra para `$DEVICE("mcp:call", ...)`. Astrid ve así el cableado
+de su cognitive OS (qué workers existen y cómo alcanzarlos) bajo el mismo
+contrato read-only de evidencia. La alcanzabilidad en vivo NO forma parte
+del digest: exigiría llamadas salientes por turno de chat. El registro es
+el hecho; una sonda de salud es una rutina aparte.
 
 ## 2. Esquema v1 (emisión en producción)
 

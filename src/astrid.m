@@ -45,7 +45,7 @@ SEED ; canonical seed (SETIF only writes missing fields)
        D SETIF^ASTRID("model","deepseek-v4-flash")
        D SETIF^ASTRID("temperature","0.3")
        D SETIF^ASTRID("creator","poli")
-       D SETIF^ASTRID("version","0.2.0")
+       D SETIF^ASTRID("version","0.3.0")
        D SETIF^ASTRID("evidence_routine","EVIDENCE^ASTRID")
        D LISTS^ASTRID
        Q
@@ -97,8 +97,9 @@ COUNT(ns) ; count subnodes under ^PERSONALITY("astrid",ns,*) — M-Light compati
        ; Contrato con poli_server (evidence_routine): esta salida es la UNICA fuente
        ; de datos del LLM del chat. Cada claim cita su source (global leido) y su
        ; d=$D. Sin claim sin source. La rutina nunca escribe. Secciones: estado,
-       ; ^ANGI, routing, ^SPACE, ^MVM, ^QUANTUM. Ver docs/EVIDENCE_SCHEMA.md.
-       N ev,mode,n,k,vo,al,lw,ag,s,a,nc,nj,q,uk,d,u
+       ; ^ANGI, routing, ^SPACE, ^MVM, ^QUANTUM, inbox, ^SESSION, ^SYS(MCP).
+       ; Ver docs/EVIDENCE_SCHEMA.md.
+       N ev,mode,n,k,vo,al,lw,ag,s,a,nc,nj,q,uk,d,u,t
        S mode=$G(^ACTIVE,"creative")
        S ev="Astrid v"_$G(^PERSONALITY("astrid","version"))_" | active="_$G(^PERSONALITY("astrid","is_active"))_" | mode activo="_mode_" | evidence=true"
        S d=$D(^ACTIVE) S ev=ev_$C(10)_"claim|mode|^ACTIVE|"_$G(^ACTIVE)_"|"_d
@@ -137,12 +138,23 @@ COUNT(ns) ; count subnodes under ^PERSONALITY("astrid",ns,*) — M-Light compati
        S d=$D(^SESSION)
        I d=0 S ev=ev_$C(10)_"claim|state|^SESSION|sin overrides de modo por sesion|0"
        E  S ev=ev_$C(10)_"claim|state|^SESSION|overrides de modo presentes|"_d
+       ; ^SYS("MCP") = registro del device MCP: workers sembrados por el operador
+       S n=0 S s=$O(^SYS("MCP","")) F  Q:s=""  S n=n+1 S s=$O(^SYS("MCP",s))
+       S d=$D(^SYS("MCP")) S ev=ev_$C(10)_"claim|counter|^SYS(MCP)|servers="_n_"|"_d
+       I n=0 S ev=ev_$C(10)_"claim|state|^SYS(MCP)|sin workers registrados|"_d
+       S s=$O(^SYS("MCP",""))
+       F  Q:s=""  D
+       . S t=$G(^SYS("MCP",s,"type"))
+       . S u=$G(^SYS("MCP",s,"url"))
+       . S d=$D(^SYS("MCP",s,"url"))
+       . S ev=ev_$C(10)_"claim|config|^SYS(MCP,"_s_")|type="_t_" url="_$E(u,1,60)_"|"_d
+       . S s=$O(^SYS("MCP",s))
        S ev=ev_$C(10)_"REGLA: responde SOLO con estos datos registrados; si la pregunta necesita algo fuera de ellos, dilo y sugiere ejecutar la rutina adecuada."
        Q ev
        ; (fin digest v1 - lineas claim| parseables por el verifier)
        ; docs/EVIDENCE_SCHEMA.md define el contrato de notaria (cid/firma: roadmap)
        ; ============================================================
-       ; El extractor corta el tag en la primera linea vacia (140)
+       ; El extractor corta el tag en la primera linea vacia tras el tag
 
 AUDIT ; demo audit: namespace dinamico (observacion -> implicacion -> pregunta)
        ; Name indirection MSM (UNA arroba): @ns("") / @ns(k) con ns="^ANGI".

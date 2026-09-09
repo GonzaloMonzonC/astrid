@@ -20,6 +20,7 @@ Checks:
      ASCII block; pure ASCII; 600–1400 chars
   9. Template regression: render a scratch agent → INIT → VERIFY PASS
   10. examples/echo regression: INIT → VERIFY PASS
+  11. MCP register: the digest sees ^SYS("MCP") (cognitive OS wiring)
 
 Usage:  python tests/run_tests.py          (exit 0 = all green)
 """
@@ -123,6 +124,11 @@ def main() -> int:
     out = run('W $$EVIDENCE^ASTRID()')
     check("digest ve inbox github", "claim|counter|^ASTRID(inbox,github)|eventos=2|1" in out, out[:200])
     check("digest ve inbox webhook", "claim|counter|^ASTRID(inbox,webhook)|eventos=1|1" in out, out[:200])
+    # 8. MCP register: digest ve ^SYS("MCP") (device MCP wiring del cognitive OS)
+    run('S ^SYS("MCP","srv1","type")="http" S ^SYS("MCP","srv1","url")="https://srv1.example/mcp" S ^SYS("MCP","srv2","type")="http" S ^SYS("MCP","srv2","url")="https://srv2.example/mcp"')
+    out = run('W $$EVIDENCE^ASTRID()')
+    check("digest ve registro MCP", "claim|counter|^SYS(MCP)|servers=2|1" in out, out[:200])
+    check("digest claim por server", "claim|config|^SYS(MCP,srv1)|type=http" in out, out[:200])
     # 9. Identity sync (M ↔ MD), ASCII, longitud
     im, imd = identity_from_m(), identity_from_md()
     check("identity M == MD", im == imd, f"M len={len(im)} MD len={len(imd)}")
