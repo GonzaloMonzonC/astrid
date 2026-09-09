@@ -134,7 +134,7 @@ EVIDENCE ; digest de estado REGISTRADO (read-only) para el system prompt del cha
        S ev=ev_$C(10)_"^QUANTUM: colapso="_nc_" job="_nj_" (rama colapso+job)"
        S uk=$O(^QUANTUM("colapso",""),-1)
        S ev=ev_$C(10)_"^QUANTUM ultimo colapso: "_$E($G(^QUANTUM("colapso",uk)),1,110)
-       S ev=ev_$C(10)_"^QUANTUM(ultimo) y ^QUANTUM(stats): ramas SIN datos"
+       S ev=ev_$C(10)_"^QUANTUM(ultimo)="$D(^QUANTUM("ultimo"))_"; stats(por_tipo) ultima clave="_$O(^QUANTUM("stats","por_tipo",""),-1)
        S ev=ev_$C(10)_"REGLA: responde SOLO con estos datos registrados; si la pregunta necesita algo fuera de ellos, dilo y sugiere ejecutar la rutina adecuada."
        Q ev
 
