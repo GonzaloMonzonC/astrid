@@ -2,9 +2,10 @@
 
 _How Astrid's registered evidence becomes a machine-readable claim._
 
-Status: **design draft**. The current digest is real and running
-(`EVIDENCE^ASTRID`); this document defines the shape to formalize it and the
-anchor to make it verifiable across agents.
+Status: **emisor en producción (2026-09-09, verificado en el MVM real)**.
+`EVIDENCE^ASTRID` emite claims `claim|<kind>|<source>|<value>|<d>`
+parseables (19 claims por digest). Pendiente: verifier harness (AC-2..AC-4)
+y el anclaje (sección 3).
 
 ---
 
@@ -32,10 +33,9 @@ REGLA: responde SOLO con estos datos registrados; ...
 Each line is a **claim with a visible source** (the global it was read
 from). That is the seed of the notary contract.
 
-## 2. Schema v1 (proposed)
+## 2. Schema v1 (emitting in production)
 
-Every claim becomes a structured tuple, while keeping the digest
-human-readable (the LLM still reads it as text):
+The digest is line-oriented, one fact per line. Every claim is emitted as:
 
 ```
 <kind>|<source>|<value>|<ts>|<d>

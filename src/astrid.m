@@ -92,51 +92,51 @@ COUNT(ns) ; count subnodes under ^PERSONALITY("astrid",ns,*) — M-Light compati
        . S k=$O(^PERSONALITY("astrid",ns,k))
        Q n
 
-EVIDENCE ; digest de estado REGISTRADO (read-only) para el system prompt del chat
-       ; QUIT devuelve string ASCII con hechos verificados en el MVM real.
-       ; Contrato con poli_server (evidence_routine): el LLM del chat recibe
-       ; esta salida como UNICA fuente de datos — no debe inventar fuera de ella.
-       ; Secciones: estado, ^ANGI, ^SPACE (bindings de datos), ^MVM (capa de
-       ; virtualizacion de agentes M-native), routing.
-       N ev,mode,n,k,vo,al,lw,ag,s,a,nc,nj,q,uk
+       EVIDENCE ; digest REGISTRADO read-only - schema v1: claim|kind|source|value|d
+       ; Contrato con poli_server (evidence_routine): esta salida es la UNICA fuente
+       ; de datos del LLM del chat. Cada claim cita su source (global leido) y su
+       ; d=$D. Sin claim sin source. La rutina nunca escribe. Secciones: estado,
+       ; ^ANGI, routing, ^SPACE, ^MVM, ^QUANTUM. Ver docs/EVIDENCE_SCHEMA.md.
+       N ev,mode,n,k,vo,al,lw,ag,s,a,nc,nj,q,uk,d
        S mode=$G(^ACTIVE,"creative")
-       S n=0
-       S k=$O(^ANGI(""))
-       F  Q:k=""  D
-       . S n=n+1
-       . S k=$O(^ANGI(k))
+       S ev="Astrid v"_$G(^PERSONALITY("astrid","version"))_" | active="_$G(^PERSONALITY("astrid","is_active"))_" | mode activo="_mode_" | evidence=true"
+       S d=$D(^ACTIVE) S ev=ev_$C(10)_"claim|mode|^ACTIVE|"_$G(^ACTIVE)_"|"_d
+       S n=0 S k=$O(^ANGI("")) F  Q:k=""  S n=n+1 S k=$O(^ANGI(k))
+       S d=$D(^ANGI) S ev=ev_$C(10)_"claim|counter|^ANGI(level1)|"_n_"|"_d
        S vo=$G(^ANGI("metrics","agents_online"))
        S al=$G(^ANGI("metrics","alerts_last_run"))
        S lw=$G(^ANGI("metrics","last_watchdog"))
-       S ag=$G(^AGENTES("routing","astrid"))
-       S ev="Astrid v"_$G(^PERSONALITY("astrid","version"))_" | active="_$G(^PERSONALITY("astrid","is_active"))_" | mode activo="_mode
-       S ev=ev_$C(10)_"^ANGI: "_n_" entrada(s) de primer nivel"
-       S ev=ev_$C(10)_"^ANGI(metrics,agents_online) raw="_$E(vo,1,80)
-       S ev=ev_$C(10)_"^ANGI(metrics,alerts_last_run) raw="_$E(al,1,80)
-       S ev=ev_$C(10)_"^ANGI(metrics,last_watchdog) raw="_$E(lw,1,80)
-       S ev=ev_$C(10)_"^AGENTES(routing,astrid)="_ag
+       S d=$D(^ANGI("metrics","agents_online")) S ev=ev_$C(10)_"claim|metric|^ANGI(metrics,agents_online)|"_$E(vo,1,80)_"|"_d
+       S d=$D(^ANGI("metrics","alerts_last_run")) S ev=ev_$C(10)_"claim|metric|^ANGI(metrics,alerts_last_run)|"_$E(al,1,80)_"|"_d
+       S d=$D(^ANGI("metrics","last_watchdog")) S ev=ev_$C(10)_"claim|metric|^ANGI(metrics,last_watchdog)|"_$E(lw,1,80)_"|"_d
+       S d=$D(^AGENTES("routing","astrid")) S ev=ev_$C(10)_"claim|route|^AGENTES(routing,astrid)|"_$G(^AGENTES("routing","astrid"))_"|"_d
        S s=$O(^SPACE(""))
-       I s="" S ev=ev_$C(10)_"^SPACE: vacio (ningun espacio de datos bindeado)"
+       I s="" S d=$D(^SPACE) S ev=ev_$C(10)_"claim|state|^SPACE|vacio|"_d
        F  Q:s=""  D
-       . S ev=ev_$C(10)_"^SPACE("_s_") -> "_$G(^SPACE(s,"host"))_":"_$G(^SPACE(s,"port"))
+       . S d=$D(^SPACE(s)) S ev=ev_$C(10)_"claim|config|^SPACE("_s_")|"_$G(^SPACE(s,"host"))_":"_$G(^SPACE(s,"port"))_"|"_d
        . S s=$O(^SPACE(s))
-       S ev=ev_$C(10)_"^MVM(router): status="_$G(^MVM("router","status"))_" v="_$G(^MVM("router","version"))_" agents="_$G(^MVM("router","agents_count"))_" provider="_$G(^MVM("router","provider"))
-       S ev=ev_$C(10)_"^MVM(api): v="_$G(^MVM("api","version"))_" agent_count="_$G(^MVM("api","agent_count"))_" agents_count="_$G(^MVM("api","agents_count"))
-       S n=0
-       S a=$O(^MVM("agents",""))
-       F  Q:a=""  D
-       . S n=n+1
-       . S a=$O(^MVM("agents",a))
-       S ev=ev_$C(10)_"^MVM(agents): "_n_" clave(s) registradas"
-       S ev=ev_$C(10)_"^VIRTUAL y ^BIND: no existen en este runtime (la virtualizacion vive en ^MVM y los binds en ^SPACE)"
+       S d=$D(^MVM("router")) S ev=ev_$C(10)_"claim|config|^MVM(router)|status="_$G(^MVM("router","status"))_" v="_$G(^MVM("router","version"))_" agents="_$G(^MVM("router","agents_count"))_" provider="_$G(^MVM("router","provider"))_"|"_d
+       S d=$D(^MVM("api")) S ev=ev_$C(10)_"claim|config|^MVM(api)|v="_$G(^MVM("api","version"))_" agent_count="_$G(^MVM("api","agent_count"))_" agents_count="_$G(^MVM("api","agents_count"))_"|"_d
+       S n=0 S a=$O(^MVM("agents","")) F  Q:a=""  S n=n+1 S a=$O(^MVM("agents",a))
+       S d=$D(^MVM("agents")) S ev=ev_$C(10)_"claim|counter|^MVM(agents)|"_n_"|"_d
+       S d=$D(^VIRTUAL) S ev=ev_$C(10)_"claim|note|^VIRTUAL|no existe (la virtualizacion vive en ^MVM)|"_d
+       S d=$D(^BIND) S ev=ev_$C(10)_"claim|note|^BIND|no existe (los binds viven en ^SPACE)|"_d
        S nc=0 S q=$O(^QUANTUM("colapso","")) F  Q:q=""  S nc=nc+1 S q=$O(^QUANTUM("colapso",q))
        S nj=0 S q=$O(^QUANTUM("job","")) F  Q:q=""  S nj=nj+1 S q=$O(^QUANTUM("job",q))
-       S ev=ev_$C(10)_"^QUANTUM: colapso="_nc_" job="_nj_" (rama colapso+job)"
+       S d=$D(^QUANTUM("colapso")) S ev=ev_$C(10)_"claim|counter|^QUANTUM(colapso)|"_nc_"|"_d
+       S d=$D(^QUANTUM("job")) S ev=ev_$C(10)_"claim|counter|^QUANTUM(job)|"_nj_"|"_d
        S uk=$O(^QUANTUM("colapso",""),-1)
-       S ev=ev_$C(10)_"^QUANTUM ultimo colapso: "_$E($G(^QUANTUM("colapso",uk)),1,110)
-       S ev=ev_$C(10)_"^QUANTUM ultimo y stats: POBLADAS (auditoria 2026-09-09: 115 colapsos integros, 19 tipos, ultimo ladder6 Tuna-17)"
+       S d=$D(^QUANTUM("colapso",uk)) S ev=ev_$C(10)_"claim|entry|^QUANTUM(colapso,ultimo)|idx="_uk_" raw="_$E($G(^QUANTUM("colapso",uk)),1,110)_"|"_d
+       S d=$D(^QUANTUM("ultimo")) S ev=ev_$C(10)_"claim|state|^QUANTUM(ultimo,stats)|POBLADAS auditoria 2026-09-09 (115 integros, 19 tipos)|"_d
+       S d=$D(^SESSION)
+       I d=0 S ev=ev_$C(10)_"claim|state|^SESSION|sin overrides de modo por sesion|0"
+       E  S ev=ev_$C(10)_"claim|state|^SESSION|overrides de modo presentes|"_d
        S ev=ev_$C(10)_"REGLA: responde SOLO con estos datos registrados; si la pregunta necesita algo fuera de ellos, dilo y sugiere ejecutar la rutina adecuada."
        Q ev
+       ; (fin digest v1 - lineas claim| parseables por el verifier)
+       ; docs/EVIDENCE_SCHEMA.md define el contrato de notaria (cid/firma: roadmap)
+       ; ============================================================
+       ; El extractor corta el tag en la primera linea vacia (140)
 
 AUDIT ; demo audit: namespace dinamico (observacion -> implicacion -> pregunta)
        ; Name indirection MSM (UNA arroba): @ns("") / @ns(k) con ns="^ANGI".
