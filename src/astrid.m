@@ -92,6 +92,30 @@ COUNT(ns) ; count subnodes under ^PERSONALITY("astrid",ns,*) — M-Light compati
        . S k=$O(^PERSONALITY("astrid",ns,k))
        Q n
 
+EVIDENCE ; digest de estado REGISTRADO (read-only) para el system prompt del chat
+       ; QUIT devuelve string ASCII con hechos verificados en el MVM real.
+       ; Contrato con poli_server (evidence_routine): el LLM del chat recibe
+       ; esta salida como UNICA fuente de datos — no debe inventar fuera de ella.
+       N ev,mode,n,k,vo,al,lw,ag
+       S mode=$G(^ACTIVE,"creative")
+       S n=0
+       S k=$O(^ANGI(""))
+       F  Q:k=""  D
+       . S n=n+1
+       . S k=$O(^ANGI(k))
+       S vo=$G(^ANGI("metrics","agents_online"))
+       S al=$G(^ANGI("metrics","alerts_last_run"))
+       S lw=$G(^ANGI("metrics","last_watchdog"))
+       S ag=$G(^AGENTES("routing","astrid"))
+       S ev="Astrid v"_$G(^PERSONALITY("astrid","version"))_" | active="_$G(^PERSONALITY("astrid","is_active"))_" | mode activo="_mode
+       S ev=ev_$C(10)_"^ANGI: "_n_" entrada(s) de primer nivel"
+       S ev=ev_$C(10)_"^ANGI(metrics,agents_online) raw="_$E(vo,1,80)
+       S ev=ev_$C(10)_"^ANGI(metrics,alerts_last_run) raw="_$E(al,1,80)
+       S ev=ev_$C(10)_"^ANGI(metrics,last_watchdog) raw="_$E(lw,1,80)
+       S ev=ev_$C(10)_"^AGENTES(routing,astrid)="_ag
+       S ev=ev_$C(10)_"REGLA: responde SOLO con estos datos registrados; si la pregunta necesita algo fuera de ellos, dilo y sugiere ejecutar la rutina adecuada."
+       Q ev
+
 AUDIT ; demo audit: namespace dinamico (observacion -> implicacion -> pregunta)
        ; Name indirection MSM (UNA arroba): @ns("") / @ns(k) con ns="^ANGI".
        ; Soportada por M-Light desde 2026-09-09 (commit 243e74c, igual que

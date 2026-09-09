@@ -15,16 +15,17 @@ versioning.
   producción: primera auditoría real dinámica (^ANGI → 1 entrada de primer
   nivel — `metrics`).
 
-### Known — producción 2026-09-09 (prueba de voz)
-El chat con la personalidad (`mode=astrid`, /v1/chat) responde con voz
-perfecta pero **no ejecuta sus rutinas M**: el fallback LLM describe
-"Ejecutando rutina AST-AUDIT/01" e inventa evidencia (`$DATA(^ANGI)=0`,
-namespaces `%SYS`/`CLAB`, error `M67`, `ZALLOCATE`) que contradice el
-resultado real de `AUDIT^ASTRID` (^ANGI sí existe). Violación de su regla 1
-("operar solo sobre datos registrados"). Pendiente: inyectar la salida real
-de sus rutinas (harness) en el contexto del LLM antes de responder, o que el
-router de chat de Poli ejecute `D AUDIT^ASTRID` y le pase el output como
-evidencia.
+### Fixed (2026-09-09, verificado en prod por /v1/chat)
+- El chat de personalidad inventaba evidencia (dijo `$DATA(^ANGI)=0` y lore
+  `%SYS`/`M67`/`ZALLOCATE` con ^ANGI vivo). Fix en dos partes:
+  1. `EVIDENCE^ASTRID` — digest read-only de estado registrado (QUIT string):
+     activo, ^ANGI (entradas + metrics raw), routing astrid + regla de uso.
+  2. poli_server: hook genérico `evidence_routine` por personalidad
+     (^PERSONALITY(mode,"evidence_routine")): antes del `llm:call` ejecuta la
+     rutina M real y antepone su salida al system prompt como EVIDENCIA
+     REGISTRADA. Verificado: Astrid audita con datos reales (agents_online=12,
+     incoherencia mode activo roberto vs routing astrid detectada) — cero
+     inventiva.
 
 ## [0.1.0] — 2026-09-09 (pre-publication)
 

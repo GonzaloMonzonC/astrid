@@ -74,6 +74,7 @@ personalidad y por routing del ecosistema.
 | `ASTRID^ASTRID` | — (lee `^PERSONALITY("astrid",*)`) | estado: versión, active, identity_len, counts, provider/model | health check |
 | `INIT^ASTRID` / `INIT^ASTRID(1)` | opcional force=1 | siembra `^PERSONALITY("astrid")` | registro reproducible |
 | `VERIFY^VERIFY` | — | PASS/FAIL (identity ≥600, active, provider/model) | test |
+| `EVIDENCE^ASTRID` | devuelve digest de estado registrado | evidencia para el chat (hook `evidence_routine`) | |
 | `AUDIT^ASTRID` | `^ASTRID("audit_ns")` o default `^ANGI` | observación → implicación → pregunta | demo de auditoría (solo lectura) |
 | `$$COUNT^ASTRID(ns)` | nombre de lista (capabilities, critical_rules…) | número de subnodos | helper |
 
