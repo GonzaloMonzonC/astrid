@@ -18,6 +18,30 @@ evidencia falla, el fallo es visible (`evidence: false`), no se oculta.
 > entrenada para ser verificable. Útil es una promesa. Verificable es un
 > diseño.
 
+**Corre sobre [lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol)
+(MIT)** — protocolo · PDB · M-Light/MVM · Poli+Smith · 115 herramientas MCP,
+sin claves de API. El repo del agente es la puerta; el protocolo es la casa.
+
+## Así se ve su evidencia
+
+Un digest real (18 afirmaciones por ejecución en producción; schema v1):
+
+```
+Astrid v0.2.0 | active=1 | mode activo=astrid | evidence=true
+claim|mode|^ACTIVE|astrid|1
+claim|metric|^ANGI(metrics,agents_online)|{"value": 12, "updated": "..."}|1
+claim|route|^AGENTES(routing,astrid)|{"tipo": "poli", "mode": "astrid"}|1
+claim|config|^SPACE(ASI)|127.0.0.1 :9102|10
+claim|counter|^QUANTUM(colapso)|119|10
+claim|note|^VIRTUAL|no existe (la virtualizacion vive en ^MVM)|0
+REGLA: responde SOLO con estos datos registrados; ...
+```
+
+Cada afirmación cita el global del que se leyó (`source`) y su código de
+presencia (`d`). Pregúntale cualquier cosa que no esté en esa ejecución y te
+lo dice — no rellena el hueco. Ver
+[`docs/EVIDENCE_SCHEMA.es.md`](docs/EVIDENCE_SCHEMA.es.md) para el contrato.
+
 ## Por qué existe esto
 
 Los LLM fabrican. Ese es el problema conocido — y la respuesta conocida hasta
@@ -42,17 +66,26 @@ instrucciones.
 
 ## Qué pasa cuando la evidencia falla
 
-Esta es la parte que los demás agentes no documentan. Durante sus primeros
-días en producción, dos bugs distintos rompieron su hook de evidencia (un
-límite del parser de M-Light con llamadas `$O`/`$D` anidadas — ambos
-corregidos). Cada vez, Astrid **alucinó una respuesta segura de sí misma**, y
-cada vez la respuesta llevaba el flag `"evidence": false`. La alucinación no
-la atrapó un guardarraíl, sino el propio diseño: *la ausencia de evidencia
-forma parte de la respuesta*.
+Esta es la parte que los demás agentes no documentan. Durante su primer día en
+producción, dos bugs distintos rompieron su hook de evidencia (un límite del
+parser de M-Light con llamadas `$O`/`$D` anidadas — ambos corregidos). Cada
+vez, Astrid **alucinó una respuesta segura de sí misma**, y cada vez la
+respuesta llevaba el flag `"evidence": false`. La alucinación no la atrapó un
+guardarraíl, sino el propio diseño: *la ausencia de evidencia forma parte de
+la respuesta*. Un tercer incidente precedió al hook — el que lo motivó: se
+inventó `$DATA(^ANGI)=0` y una historia de `%SYS` mientras ^ANGI estaba viva.
+También está documentado (CHANGELOG 0.1.1). Nada se borra.
 
 El registro de incidentes está en [`CHANGELOG.md`](CHANGELOG.md). Léelo: es
 la parte más honesta de este repo. Un sistema que puede mostrarte cuándo no
 es de fiar es un sistema sobre el que puedes construir.
+
+**La historia con trabajo real**: auditó un libro de contabilidad vivo de
+experimentos cuánticos — más de 115 ejecuciones en hardware QPU real — y
+encontró el bug de escritura detrás de los contadores, se negó a especular
+cuando le pidieron un veredicto que su evidencia no cubría, y confirmó el
+arreglo solo contra su propio digest. Relato completo:
+[`docs/STORY.es.md`](docs/STORY.es.md).
 
 ## El contrato de notaría
 
@@ -65,6 +98,67 @@ anclarlo: un digest con dirección de contenido y firmado que convierta a
 Astrid en la **notaria de registro de los workflows multi-agente**. Clonar el
 agente MIT te da la honestidad; el protocolo te da la capa de reputación
 debajo.
+
+## Inicio rápido (local)
+
+**Dependencia**: [lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol)
+(MIT) — clónalo al mismo nivel que este repo (carpetas hermanas), para que el
+harness encuentre el runtime. Astrid es el agente de referencia **encima** de
+él; fija un release/commit cuando hagas fork. Referencia para esta versión:
+lumen-protocol `main` (2026-09, verificado: la indirección de nombres de AUDIT
+necesita el fix de M-Light del commit `243e74c` o posterior).
+
+1. Consigue un runtime M: compila el Rust MVM desde tu clon de lumen-protocol
+   (`implementations/rust/lumen-m-light`, `cargo build --release`, la DLL en
+   `implementations/mcp-servers/pdb/`), o apunta `LUMEN_MLIGHT_LIB` a un
+   `lumen_mlight.dll` existente. *(`pip install lumen-mcp` solo incluye
+   bindings de transporte — sin MVM — a partir de 0.1.0.)*
+2. Carga la rutina y siémbrala (identidad → `^PERSONALITY("astrid")`, incluido
+   el contrato `evidence_routine`):
+   ```m
+   ; carga src/astrid.m en tu ruta de rutinas M
+   D INIT^ASTRID      ; rellena lo que falta, idempotente
+   D INIT^ASTRID(1)   ; sobrescribe / reset completo
+   ```
+3. Verifica y ejecuta el digest registrado — el canario del hook de evidencia:
+   ```m
+   D VERIFY^VERIFY          ; PASS astrid (identidad, activo, provider/model)
+   W $$EVIDENCE^ASTRID()    ; el digest: afirmaciones con fuentes + evidence=true
+   ```
+   O con el harness (hace el seed + digest por ti, sobre una PDB desechable):
+   ```bash
+   python harness/astrid_harness.py seed
+   python harness/astrid_harness.py evidence
+   ```
+   La salida esperada empieza con `Astrid v0.2.0 | active=1 | ... | evidence=true`
+   seguida de líneas `claim|...` (ver la muestra más arriba).
+4. Suite completa contra un MVM real sobre una PDB desechable — sin servicios
+   externos, **16 checks**:
+   ```bash
+   python tests/run_tests.py
+   ```
+
+## Roadmap
+
+- [x] Repo público, MIT — publicado el 2026-09-09
+- [x] Evidence hook en producción — el chat responde solo desde `EVIDENCE^ASTRID`;
+      `evidence:false` visible (incidentes en CHANGELOG)
+- [x] Emisor de schema v1 — digest como afirmaciones parseables (listo para verificador)
+- [x] Canario de evidencia en la suite de tests (16 checks)
+- [ ] Harness verificador — formato de claim, existencia de la fuente contra
+      snapshot de la PDB, estabilidad (AC-2..AC-4 en `docs/EVIDENCE_SCHEMA.es.md`)
+- [ ] Anclaje de notaría — digest firmado con dirección de contenido (cid +
+      firma + libro `^EVIDENCE`) vía lumen-protocol
+- [ ] Cableado completo de inbox standalone (bucle de agente nativo del MVM)
+
+## Agentes hermanos
+
+- **Echo** — el agente derivado generado por `template/render.py`
+  (`examples/echo`), usado como regresión del template en la suite.
+- [lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol) — el
+  metal bajo Astrid: protocolo MIT, PDB, M-Light/MVM, Poli+Smith, 115
+  herramientas MCP. Construye uno como el suyo y publícalo en abierto — mismo
+  esqueleto, tu identidad.
 
 ## Estructura
 
@@ -82,7 +176,9 @@ astrid/
 ├── personalities/
 │   └── astrid.md        Identidad completa legible (ES) — acentos, voz, campos
 ├── harness/
-│   └── astrid_harness.py  Runner de status/audit (lumen-mcp o clon local)
+│   └── astrid_harness.py  Runner de status/seed/evidence/verify/audit
+├── template/            Deriva un nuevo agente: render.py + AGENT.*.tpl
+├── examples/echo        Agente derivado generado por el template (regresión)
 ├── docs/
 │   ├── DESIGN.md        EN — ficha de identidad, contrato de agente, ciclo, checklist de publicación
 │   ├── DESIGN.es.md     ES — diseño, contrato de agente, ciclo
@@ -93,74 +189,19 @@ astrid/
 │   ├── BUILD_YOUR_OWN.md        EN — guía paso a paso para construir un agente derivado
 │   └── BUILD_YOUR_OWN.es.md     ES — guía paso a paso para un agente derivado
 └── tests/
+    ├── run_tests.py     Suite completa, 16 checks, un comando
     └── verify.m         Verificación: la identidad existe, habla, opera
 ```
 
-Política de idiomas: el EN es canónico para el código y los docs raíz
-(README.md, CHANGELOG, SECURITY, CONTRIBUTING). El ES vive como espejo
-`.es.md` junto al fichero en inglés. La ficha de personalidad
-(`personalities/astrid.md`) es ES por diseño — es la versión legible de la
-línea de identidad ASCII.
+**Más lecturas**: [DESIGN.es.md](docs/DESIGN.es.md) (por qué está construida
+así) · [STORY.es.md](docs/STORY.es.md) (la historia de lanzamiento con la
+auditoría cuántica real) · [EVIDENCE_SCHEMA.es.md](docs/EVIDENCE_SCHEMA.es.md)
+(el contrato de notaría) · [BUILD_YOUR_OWN.es.md](docs/BUILD_YOUR_OWN.es.md)
+(construye un agente derivado).
 
-## Inicio rápido (local)
+## Política de idiomas
 
-**Dependencia**: [lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol)
-(MIT) — protocolo, PDB, M-Light/MVM, Poli+Smith, 115 herramientas MCP. Astrid
-es el agente de referencia **encima** de él; fija un release/commit cuando
-hagas fork. Referencia para esta versión: lumen-protocol `main` (2026-09).
-
-1. Consigue un runtime M: compila el Rust MVM desde un clon de lumen-protocol
-   (`implementations/rust/lumen-m-light`, `cargo build --release`, la DLL en
-   `implementations/mcp-servers/pdb/`), o apunta `LUMEN_MLIGHT_LIB` a un
-   `lumen_mlight.dll` existente. *(`pip install lumen-mcp` solo incluye
-   bindings de transporte — sin MVM — a partir de 0.1.0.)*
-2. Carga la rutina y siémbrala (identidad → `^PERSONALITY("astrid")`):
-   ```m
-   ; carga src/astrid.m en tu ruta de rutinas M
-   D INIT^ASTRID      ; rellena lo que falta, idempotente
-   D ASTRID^ASTRID    ; estado
-   W $$EVIDENCE^ASTRID()  ; el digest registrado — léelo, luego háblale
-   ```
-3. Verifica (PDB desechable, sin servicios externos) — **suite completa, un
-   solo comando**:
-   ```bash
-   python tests/run_tests.py    # 12 checks: INIT/status/VERIFY/AUDIT + identidad
-                                # regresiones sync + template + echo → todo verde
-   ```
-   o los checks M individuales:
-   ```m
-   D VERIFY^VERIFY    ; → PASS astrid verificado
-   ```
-   o mediante el harness (status / auditoría demo contra cualquier PDB local):
-   ```bash
-   python harness/astrid_harness.py status
-   python harness/astrid_harness.py audit --ns ^MYNS
-   ```
-4. Háblale: el modo de personalidad `astrid` en cualquier runtime de chat
-   LUMEN que lea `^PERSONALITY` + el contrato `evidence_routine` (p. ej.
-   Poli), o mediante los MCP servers de LUMEN (filesystem, web, thinking, PDB
-   — cero API keys).
-
-## Roadmap
-
-- [x] Ficha de identidad (ronda de diseño de gabinete + revisión técnica, 2026-09)
-- [x] Registrada en `^PERSONALITY("astrid")` + routing del ecosistema (poli:astrid)
-- [x] Esqueleto del repo: INIT reproducible, verify.m (paramétrico), harness, docs (EN/ES)
-- [x] Template validado: `examples/echo` derivado con `template/render.py` + verificado en el MVM
-- [x] Harness validado en venv limpio (solo el clon de lumen-protocol)
-- [x] **Publicado en GitHub (MIT)** — público, main
-- [x] Evidence hook en producción: el chat responde desde el output de `EVIDENCE^ASTRID`;
-      `evidence:false` es visible cuando el pipeline falla (incidentes en CHANGELOG)
-- [ ] Inbox standalone completo (bucle de agente nativo del MVM)
-- [ ] Digest firmado y con dirección de contenido, anclado vía lumen-protocol (contrato de notaría)
-
-## Agentes hermanos
-
-Astrid es el primer **agente de referencia**. Los hermanos planeados
-expondrán otras facultades de LUMEN (p. ej., uno centrado en la supervisión
-de procesos del MVM, otro en operaciones de PDB). Cada uno es su propio repo
-MIT con el mismo esqueleto — ver `docs/BUILD_YOUR_OWN.md`.
-
----
-
-Repos MIT relacionados: [lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol) · [Poli](https://github.com/GonzaloMonzonC/poli)
+El EN es canónico para el código y los docs raíz (README, CHANGELOG,
+SECURITY, CONTRIBUTING). El ES vive como espejo `.es.md` junto al fichero en
+inglés. La ficha de personalidad (`personalities/astrid.md`) es ES por diseño
+— es la versión legible de la línea de identidad ASCII.

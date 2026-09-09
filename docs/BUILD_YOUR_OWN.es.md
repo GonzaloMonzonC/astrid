@@ -117,7 +117,8 @@ está en verde — ver `docs/DESIGN.md`):
 - [ ] LICENSE MIT + README EN/ES + docs/DESIGN.md presentes.
 - [ ] Verify.m pasa contra una PDB limpia; `EVIDENCE^MYAGENT` emite claims
       con fuentes.
-- [ ] El harness corre en una máquina limpia con solo
-      `pip install lumen-mcp`.
+- [ ] El harness corre en una máquina limpia con solo un clon de
+      lumen-protocol (`pip install lumen-mcp` 0.1.0 solo trae bindings
+      de transporte — ver §0).
 - [ ] Línea de identity ASCII < 1400 caracteres, en una sola línea,
       sincronizada con `src/myagent.m` (test automatizado).

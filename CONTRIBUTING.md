@@ -11,7 +11,7 @@ template for building agents on lumen-protocol.
   literal, non-speculative character — the design round notes live in
   `docs/DESIGN.md`.
 - **Docs**: clearer BUILD_YOUR_OWN steps, better examples.
-- **Derived agents**: if you build one, link it in the README ecosystem
+- **Derived agents**: if you build one, link it in the README "Sibling agents"
   section (do not fork this repo into a private agent).
 
 ## Conventions

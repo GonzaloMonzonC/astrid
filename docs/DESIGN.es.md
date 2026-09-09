@@ -1,5 +1,7 @@
 # Astrid — DESIGN
 
+> 🇬🇧 English version: [DESIGN.md](DESIGN.md)
+
 ## Resumen
 
 Astrid es el **agente de referencia** de lumen-protocol: un repo MIT separado
@@ -22,9 +24,11 @@ Capas:
 └─────────────────────────────────────────────┘
 ```
 
-Regla MIT: en este repo **nunca** entra lore privado del ecosistema (rutas
-internas, agentes internos con criterio de negocio, claves, diarios). Lo que
-se publique aquí debe poder ejecutarlo cualquiera con solo lumen-protocol.
+Regla MIT (acotada, 2026-09-09): en este repo **nunca** entran claves, rutas
+internas, lógica de negocio ni diarios de lore privado. Las menciones
+nominales en la historia (agentes, hardware QPU, el runtime de origen) son
+narrativa verificable y no impiden la ejecución — lo publicado debe poder
+ejecutarlo cualquiera con solo lumen-protocol.
 
 ## Ciclo operativo (el ciclo es el tutorial)
 

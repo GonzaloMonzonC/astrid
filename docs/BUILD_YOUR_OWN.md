@@ -108,6 +108,7 @@ Checklist before pushing to a public remote (Astrid's is green — see
 - [ ] LICENSE MIT + README EN/ES + docs/DESIGN.md present.
 - [ ] Verify.m passes against a fresh PDB; `EVIDENCE^MYAGENT` emits claims
       with sources.
-- [ ] Harness runs on a clean machine with only `pip install lumen-mcp`.
+- [ ] Harness runs on a clean machine with only a lumen-protocol clone
+      (`pip install lumen-mcp` 0.1.0 ships transport bindings only — see §0).
 - [ ] Identity line ASCII < 1400 chars, single line, synced with
       `src/myagent.m` (automated test).

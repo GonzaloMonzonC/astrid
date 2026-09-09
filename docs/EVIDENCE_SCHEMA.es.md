@@ -6,7 +6,7 @@ _Cómo la evidencia registrada de Astrid se convierte en un claim legible por m�
 
 Status: **emisor en producción (2026-09-09, verificado en el MVM real)**.
 `EVIDENCE^ASTRID` emite claims `claim|<kind>|<source>|<value>|<d>`
-parseables (19 claims por digest). Pendiente: verifier harness (AC-2..AC-4)
+parseables (15 + k, k = entradas de ^SPACE; 18 en producción). El digest es canario de la suite (16 checks). Pendiente: verifier harness (AC-2..AC-4)
 y el anclaje (sección 3).
 
 ---
@@ -23,7 +23,7 @@ Forma actual del digest — schema v1, un claim por línea (truncado para
 legibilidad; 19 claims por digest en producción):
 
 ```
-Astrid v0.1.0 | active=1 | mode activo=astrid | evidence=true
+Astrid v0.2.0 | active=1 | mode activo=astrid | evidence=true
 claim|mode|^ACTIVE|astrid|1
 claim|counter|^ANGI(level1)|1|10
 claim|metric|^ANGI(metrics,agents_online)|{"value": 12, "updated": "2026-09-09T18:25:23Z"}|1
@@ -100,11 +100,11 @@ permisiva.
 
 ## 5. Criterios de aceptación para v1
 
-- [ ] `EVIDENCE^ASTRID` emite líneas con el formato del esquema (la fuente
+- [ ] **AC-1** `EVIDENCE^ASTRID` emite líneas con el formato del esquema (la fuente
       siempre presente)
-- [ ] el camino `evidence:false` es comprobable en la suite de pruebas
-- [ ] Un script verificador (harness) comprueba: formato de línea,
+- [ ] **AC-2** el camino `evidence:false` es comprobable en la suite de pruebas
+- [ ] **AC-3** Un script verificador (harness) comprueba: formato de línea,
       existencia de la fuente en un snapshot dado de la PDB, estabilidad
       del cid ante estados idénticos
-- [ ] Documentación actualizada: README (sección del contrato de notaría),
+- [ ] **AC-4** Documentación actualizada: README (sección del contrato de notaría),
       STORY, DESIGN

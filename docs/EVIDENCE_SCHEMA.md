@@ -2,10 +2,11 @@
 
 _How Astrid's registered evidence becomes a machine-readable claim._
 
-Status: **emisor en producción (2026-09-09, verificado en el MVM real)**.
-`EVIDENCE^ASTRID` emite claims `claim|<kind>|<source>|<value>|<d>`
-parseables (19 claims por digest). Pendiente: verifier harness (AC-2..AC-4)
-y el anclaje (sección 3).
+Status: **emitter in production (2026-09-09, verified on the real MVM)**.
+`EVIDENCE^ASTRID` emits parseable claims `claim|<kind>|<source>|<value>|<d>`
+(15 + k, k = ^SPACE entries; 18 in production). The digest is a canary in
+the test suite (16 checks). Pending: verifier harness (AC-2..AC-4 below)
+and the anchor (section 3).
 
 ---
 
@@ -21,7 +22,7 @@ Current digest shape — schema v1, one claim per line (truncated for
 readability; 19 claims per digest in production):
 
 ```
-Astrid v0.1.0 | active=1 | mode activo=astrid | evidence=true
+Astrid v0.2.0 | active=1 | mode activo=astrid | evidence=true
 claim|mode|^ACTIVE|astrid|1
 claim|counter|^ANGI(level1)|1|10
 claim|metric|^ANGI(metrics,agents_online)|{"value": 12, "updated": "2026-09-09T18:25:23Z"}|1
@@ -97,8 +98,8 @@ license.
 
 ## 5. Acceptance criteria for v1
 
-- [ ] `EVIDENCE^ASTRID` emits schema-formatted lines (source always present)
-- [ ] `evidence:false` path is testable in the test suite
-- [ ] A verifier script (harness) checks: line format, source existence in a
+- [ ] **AC-1** `EVIDENCE^ASTRID` emits schema-formatted lines (source always present)
+- [ ] **AC-2** `evidence:false` path is testable in the test suite
+- [ ] **AC-3** A verifier script (harness) checks: line format, source existence in a
       given PDB snapshot, cid stability across identical states
-- [ ] Docs updated: README (notary contract section), STORY, DESIGN
+- [ ] **AC-4** Docs updated: README (notary contract section), STORY, DESIGN

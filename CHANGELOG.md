@@ -7,66 +7,87 @@ versioning.
 ## [0.2.0] — 2026-09-09 (published on GitHub, main)
 
 ### Added
-- Repo publicado: https://github.com/GonzaloMonzonC/astrid (public, MIT).
-- README reposicionado — **"Evidence, or silence"**: el agente que se niega a
-  especular. System prompt = salida en vivo de `EVIDENCE^ASTRID` ejecutada en
-  el MVM; sección "what happens when the evidence fails"; contrato de notaría
-  como roadmap hacia lumen-protocol. EN/ES.
-- `docs/STORY.md` — historia de lanzamiento (EN/ES): el caso real de la
-  auditoría cuántica, los incidentes de alucinación cazados por el diseño.
-- `docs/EVIDENCE_SCHEMA.md` — esquema del digest, contrato de notaría,
-  preguntas abiertas y criterios de aceptación.
-- Digest ampliado con ^SPACE (binds), ^MVM (router/api/agents) y ^QUANTUM
-  (colapso/job/último) — Astrid audita espacios de datos y virtualización.
-- **Schema v1 emisor**: `EVIDENCE^ASTRID` emite claims parseables
-  `claim|<kind>|<source>|<value>|<d>` (19 claims por digest, verificadas en
-  runtime sobre estado vivo). Ausencias verificadas como claims con d=0.
+- Repo published: https://github.com/GonzaloMonzonC/astrid (public, MIT).
+- README repositioned — **"Evidence, or silence"**: the agent that refuses
+  to speculate. System prompt = live output of `EVIDENCE^ASTRID` executed on
+  the MVM; "what happens when the evidence fails" section; the notary
+  contract as the roadmap into lumen-protocol. EN + ES mirrors (`.es.md`).
+- `docs/STORY.md` (+ ES) — the launch story: the real quantum audit, the
+  hallucination incidents caught by the design.
+- `docs/EVIDENCE_SCHEMA.md` (+ ES) — digest schema, notary contract,
+  open questions, acceptance criteria.
+- Digest extended with ^SPACE (binds), ^MVM (router/api/agents) and
+  ^QUANTUM (collapse/job/latest) — Astrid audits data spaces and
+  virtualization.
+- **Schema v1 emitter**: `EVIDENCE^ASTRID` emits parseable claims
+  `claim|<kind>|<source>|<value>|<d>` (18 claims per digest in production,
+  verified on live state). Verified absences become claims with d=0.
+- Team review pass (Lisa/Angi/Campo/Gon structural + devx + voice audits):
+  i18n structure EN canonical + ES mirrors; MIT rule scoped (nominal story
+  mentions allowed; secrets/paths/business logic never); harness got
+  `seed` / `evidence` / `verify` modes so the digest is runnable by a
+  documented path; test suite 12 → 16 checks.
+- **Evidence canary in the suite**: `EVIDENCE^ASTRID` runs on the throwaway
+  PDB; header must say `evidence=true`; every `claim|` line must have a
+  source and exactly 5 fields; the `evidence_routine` contract must be
+  seeded after INIT.
 
 ### Fixed
-- `$O(...)` anidado como subíndice rompía EVIDENCE (límite parser M-Light):
-  digest vacío → chat sin evidencia → Astrid alucinó ramas cuánticas
-  inventadas (`QAL/ENT_CTRL/TELEP`). Fix: variable intermedia `uk`.
-  Verificado: `evidence:true` y auditoría real de ^QUANTUM.
-- `$D`/`$O` inline en concatenación rompía EVIDENCE (mismo límite): alucinó
-  veredicto con `fidelity`/`^NORM` inventados, delatado por `evidence:false`.
-  Fix: `$D` solo en SET RHS con variable intermedia; línea de estado a texto
-  plano. **Regla de construcción M-Light**: nunca funciones M anidadas como
-  subíndice o en concatenación — variable intermedia siempre.
+- `$O(...)` nested as a subscript broke EVIDENCE (M-Light parser limit):
+  empty digest → chat without evidence → Astrid hallucinated quantum
+  branches (`QAL/ENT_CTRL/TELEP`). Fix: intermediate variable `uk`.
+  Verified: `evidence:true` and real audit of ^QUANTUM.
+- `$D`/`$O` inline inside a concatenation broke EVIDENCE (same limit):
+  hallucinated a verdict with invented `fidelity`/`^NORM`, exposed by
+  `evidence:false`. Fix: `$D` only on SET RHS via an intermediate variable.
+  **M-Light construction rule**: never nest M functions inline as a
+  subscript or inside a concatenation — use an intermediate variable.
+- `SEED` did not write `^PERSONALITY("astrid","evidence_routine")` — the
+  hook contract was applied by hand in production. Now part of the
+  reproducible seed (+ suite check).
+- Removed a stale claim in EVIDENCE (`^QUANTUM(ultimo,stats)` with a
+  hardcoded value, fixed date and a `$D` measured on the wrong node — it
+  violated the schema it was emitted under).
+- Identity version bumped to 0.2.0 (was drifting against the repo version);
+  personality card (`personalities/astrid.md`) synced.
 
 ## [0.1.1] — 2026-09-09 (production fix)
 
 ### Fixed
-- `AUDIT^ASTRID` contaba 0 entradas en Poli real: usaba la forma de DOS
-  arrobas `$O(@ns@(k))`, que no es MSM canónico. La forma correcta es UNA
-  arroba (`@ns(k)` con `ns="^ANGI"`), implementada en el runtime M-Light
-  (commit `243e74c` lumen-protocol: name indirection en `$O`/`$D`/`$G`/
-  SET/KILL + comando `X`/`XECUTE`, que tampoco existía). Verificado en Poli
-  producción: primera auditoría real dinámica (^ANGI → 1 entrada de primer
-  nivel — `metrics`).
-
-### Fixed (2026-09-09, verificado en prod por /v1/chat)
-- El chat de personalidad inventaba evidencia (dijo `$DATA(^ANGI)=0` y lore
-  `%SYS`/`M67`/`ZALLOCATE` con ^ANGI vivo). Fix en dos partes:
-  1. `EVIDENCE^ASTRID` — digest read-only de estado registrado (QUIT string):
-     activo, ^ANGI (entradas + metrics raw), routing astrid + regla de uso.
-  2. poli_server: hook genérico `evidence_routine` por personalidad
-     (^PERSONALITY(mode,"evidence_routine")): antes del `llm:call` ejecuta la
-     rutina M real y antepone su salida al system prompt como EVIDENCIA
-     REGISTRADA. Verificado: Astrid audita con datos reales (agents_online=12,
-     incoherencia mode activo roberto vs routing astrid detectada) — cero
-     inventiva.
+- `AUDIT^ASTRID` counted 0 entries on real Poli: it used the TWO-at
+  indirection form `$O(@ns@(k))`, which is not canonical MSM. The correct
+  form is ONE at-sign (`@ns(k)` with `ns="^ANGI"`), implemented in the
+  M-Light runtime (lumen-protocol commit `243e74c`: name indirection in
+  `$O`/`$D`/`$G`/SET/KILL + the `X`/`XECUTE` command, which did not exist
+  either). Verified on Poli production: first real dynamic audit (^ANGI →
+  1 first-level entry — `metrics`).
+- The personality chat invented evidence (said `$DATA(^ANGI)=0` and
+  `%SYS`/`M67`/`ZALLOCATE` lore while ^ANGI was alive). Fix in two parts:
+  1. `EVIDENCE^ASTRID` — read-only digest of registered state (QUIT
+     string): active, ^ANGI (entries + raw metrics), astrid routing + the
+     usage rule.
+  2. poli_server: generic `evidence_routine` hook per personality
+     (`^PERSONALITY(mode,"evidence_routine")`): before the `llm:call` it
+     runs the real M routine and prepends its output to the system prompt
+     as REGISTERED EVIDENCE. Verified: Astrid audits with real data
+     (agents_online=12, mode-vs-routing incoherence detected) — zero
+     invention.
+  This is the third documented hallucination incident: the one that
+  *motivated* the hook. The other two (0.2.0) were caught by the hook's
+  `evidence:false` flag.
 
 ## [0.1.0] — 2026-09-09 (pre-publication)
 
 ### Added
 - `tests/run_tests.py` — full suite, one command (12 checks, all green):
-  INIT (empty/idempotent/force) + status, VERIFY PASS/FAIL paramétrico,
+  INIT (empty/idempotent/force) + status, VERIFY PASS/FAIL parametric,
   AUDIT demo, identity sync M↔MD (ASCII, 600–1400), template render
-  regression (scratch agent) y examples/echo regression. Corres contra un
-  MVM real en PDB desechable (sin servicios externos).
+  regression (scratch agent) and examples/echo regression. Runs against a
+  real MVM on a throwaway PDB (no external services).
 - `template/` + `template/render.py`: derive a new agent with one command
-  (tokens: name, identity file, role, emoji, color…). Validated in-repo with
-  `examples/echo` (generated by the renderer; INIT + VERIFY PASS on MVM).
+  (tokens: name, identity file, role, emoji, color…). Validated in-repo
+  with `examples/echo` (generated by the renderer; INIT + VERIFY PASS on
+  MVM).
 - `tests/verify.m` now parametric: `D VERIFY^VERIFY("name")` checks any
   agent (default astrid).
 - Harness validated on a clean venv (no Poli): status + audit OK using only
@@ -86,15 +107,15 @@ versioning.
 - `harness/astrid_harness.py` — status/audit runner against lumen-mcp or a
   local lumen-protocol clone.
 - Docs: README (EN/ES), `personalities/astrid.md`, `docs/DESIGN.md`,
-  `docs/BUILD_YOUR_OWN.md` (template guide draft), SECURITY.md,
+  `docs/BUILD_YOUR_OWN.md` (template guide), SECURITY.md,
   CONTRIBUTING.md, LICENSE (MIT).
 - Ecosystem registration (Cadences Lab runtime): `^AGENTES("routing","astrid")`
   → `poli:astrid` and discovery key `^MVM("agents","astrid")`; chat verified
   via personality mode and via ecosystem routing.
 
 ### Pending (before/after first public release)
-- `template/` derived-agent skeleton with neutral names (validates the
-  template is reusable).
 - Full inbox wiring (MVM native agent loop) for standalone installs.
-- Publish to GitHub (MIT) — done only when the checklist in
-  `docs/DESIGN.md` is green.
+- Verifier harness for the digest claims (AC-2..AC-4 in
+  `docs/EVIDENCE_SCHEMA.md`).
+- Notary anchor: content-addressed, signed digest (cid + signature +
+  `^EVIDENCE` ledger via lumen-protocol).

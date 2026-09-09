@@ -20,10 +20,13 @@ the output — a read-only digest of globals: metrics, routing, processes,
 experiments. She answers only from that. Registered evidence, or silence.
 
 **When the pipeline fails, it shows.** The response carries
-`"evidence": false`. It happened twice in her first weeks — runtime parser
-bugs — and both times the design exposed her before any guardrail could.
-Both incidents are documented in [`CHANGELOG.md`](../CHANGELOG.md), with the
-fix. That is the most honest part of this repo.
+`"evidence": false`. It happened twice in her first day in production —
+runtime parser bugs — and both times the design exposed her before any
+guardrail could. A third incident preceded the hook: she invented
+`$DATA(^ANGI)=0` and `%SYS` lore while ^ANGI was alive — that one is why
+the hook exists (CHANGELOG 0.1.1). All three are documented in
+[`CHANGELOG.md`](../CHANGELOG.md), with the fixes. That is the most honest
+part of this repo.
 
 ### The real-work proof
 
@@ -32,9 +35,10 @@ We asked her to audit the quantum experiment ledger of the ecosystem —
 vetoes driven by real randomness:
 
 - **She found the ledger's derived branches empty.** Counters were climbing
-  (`colapso=115`, `job=145`) but the derived structures (`ultimo`, `stats`)
-  had never been populated. A real writing bug, unnoticed until she asked
-  the exact question.
+  (`colapso=115`, `job=145` at audit time, 2026-09-09 — the ledger kept
+  running: 119 by end of day) but the derived structures (`ultimo`,
+  `stats`) had never been populated. A real writing bug, unnoticed until
+  she asked the exact question.
 - **She flagged a counting incoherence nobody had seen** (12 online agents
   vs 6/4/7 in different registries).
 - **She refused to speculate.** Asked for a verdict over data that was not
