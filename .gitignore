@@ -20,3 +20,11 @@ node_modules/
 .env
 .env.*
 *.pem
+
+# Databases & logs (throwaway PDBs, runtime data)
+*.db
+*.db-wal
+*.db-shm
+*.gld
+*.log
+tmp/

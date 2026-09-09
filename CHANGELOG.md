@@ -1,0 +1,35 @@
+# Changelog
+
+All notable changes to this project are documented here. The format follows
+[Keep a Changelog](https://keepachangelog.com/) and the repo uses semantic
+versioning.
+
+## [0.1.0] — 2026-09-09 (pre-publication)
+
+### Added
+- Identity card for Astrid, designed in a multi-personality round
+  (gabinete: estructura/relaciones + technical review) and registered in
+  `^PERSONALITY("astrid")`: identity line (646 chars ASCII), core_mission,
+  6 critical rules, 7 capabilities, peers, provider/model deepseek-v4-flash,
+  temperature 0.3, `is_active=1`.
+- `src/astrid.m` — M routine with agent contract entry points:
+  `ASTRID` (status), `INIT` (reproducible seed, idempotent, `INIT(1)` forces),
+  `AUDIT` (demo audit: observation → implication → question),
+  `$$COUNT` (helper). Verified against a real lumen MVM on a throwaway PDB
+  (INIT empty/idempotent/force + VERIFY + AUDIT: all ok).
+- `tests/verify.m` — identity ≥ 600 chars, is_active, provider/model checks.
+- `harness/astrid_harness.py` — status/audit runner against lumen-mcp or a
+  local lumen-protocol clone.
+- Docs: README (EN/ES), `personalities/astrid.md`, `docs/DESIGN.md`,
+  `docs/BUILD_YOUR_OWN.md` (template guide draft), SECURITY.md,
+  CONTRIBUTING.md, LICENSE (MIT).
+- Ecosystem registration (Cadences Lab runtime): `^AGENTES("routing","astrid")`
+  → `poli:astrid` and discovery key `^MVM("agents","astrid")`; chat verified
+  via personality mode and via ecosystem routing.
+
+### Pending (before/after first public release)
+- `template/` derived-agent skeleton with neutral names (validates the
+  template is reusable).
+- Full inbox wiring (MVM native agent loop) for standalone installs.
+- Publish to GitHub (MIT) — done only when the checklist in
+  `docs/DESIGN.md` is green.

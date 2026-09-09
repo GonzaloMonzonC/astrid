@@ -1,8 +1,7 @@
-verify ; 🧬 ASTRID — verification (M-Light compatible)
-       ; Checks: identity seeded, active, provider/model set, rules+capabilities counted.
-       ; Usage: D VERIFY^VERIFY
-VERIFY
-       N ok
+VERIFY ; 🧬 ASTRID — verification (M-Light compatible)
+        ; Checks: identity seeded, active, provider/model set, rules+capabilities counted.
+        ; Usage: D VERIFY^VERIFY
+        N ok
        S ok=1
        I $G(^PERSONALITY("astrid","identity"))="" D
        . W !,"FAIL identity vacia" S ok=0

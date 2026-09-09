@@ -29,43 +29,66 @@ clone Astrid → run her on LUMEN → build your own ecosystem.
 astrid/
 ├── LICENSE              MIT
 ├── README.md            This file (EN · ES below)
+├── SECURITY.md          No secrets, PDB discipline, reporting
+├── CONTRIBUTING.md      Conventions + process
+├── CHANGELOG.md         Keep a Changelog / semver
 ├── src/
-│   └── astrid.m         M routine: identity, status, audit primitives
+│   └── astrid.m         M routine: ASTRID (status) · INIT (reproducible seed) · AUDIT · COUNT
 ├── personalities/
 │   └── astrid.md        Full readable identity (accents, voice, fields)
+├── harness/
+│   └── astrid_harness.py  status/audit runner (lumen-mcp or local clone)
 ├── docs/
-│   ├── DESIGN.md        Identity card, operating cycle, rules, capabilities
-│   └── BUILD_YOUR_OWN.md (planned) step-by-step agent construction guide
+│   ├── DESIGN.md        Identity card, agent contract, cycle, publish checklist
+│   └── BUILD_YOUR_OWN.md  step-by-step guide to build a derived agent
 └── tests/
     └── verify.m         Verification: identity exists, speaks, operates
 ```
 
 ## Quickstart (local)
 
-1. Clone [lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol) and
-   build the Rust MVM (`implementations/rust/lumen-m-light`), or run Poli
-   (`implementations/mcp-servers/poli/`) which embeds it.
-2. Load the routine:
+**Dependency**: [lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol)
+(MIT) — protocol, PDB, M-Light/MVM, Poli+Smith, 115 MCP tools. Astrid is the
+reference agent **on top** of it; pin a release/commit when you fork.
+Reference for this version: lumen-protocol `main` (2026-09).
+
+1. Get an M runtime: build the Rust MVM
+   (`implementations/rust/lumen-m-light`, `cargo build --release`) or
+   `pip install lumen-mcp` (published bindings).
+2. Load the routine and seed her (identity → `^PERSONALITY("astrid")`):
+   ```m
+   ; load src/astrid.m into your M routine path
+   D INIT^ASTRID      ; fill-missing, idempotent
+   D ASTRID^ASTRID    ; status
    ```
-   ZLOAD astrid  (or copy src/astrid.m into your M routine path)
-   D ASTRID^ASTRID
+3. Verify (throwaway PDB, no external services):
+   ```m
+   D VERIFY^VERIFY    ; → PASS astrid verificada
    ```
-3. Seed the personality (identity lives in `^PERSONALITY("astrid")`):
+   or via the harness:
+   ```bash
+   python harness/astrid_harness.py status
+   python harness/astrid_harness.py audit --ns ^MYNS
    ```
-   D INIT^ASTRID
-   ```
-4. Talk to her: `mode=astrid` in Poli chat, or via the LUMEN MCP servers
+4. Talk to her: personality mode `astrid` in any LUMEN chat runtime that
+   reads `^PERSONALITY` (e.g. Poli), or via the LUMEN MCP servers
    (filesystem, web, thinking, PDB — zero API keys).
 
 ## Roadmap
 
-- [x] Identity card (gabinete design round, 2026-09)
-- [x] Registered in `^PERSONALITY("astrid")`
-- [x] Repo skeleton (this)
-- [ ] `astrid init` bootstrap: identity + MVM spawn + `^AGENTES` registration
-- [ ] Harness: connect Astrid to LUMEN MCP servers (docs/BUILD_YOUR_OWN.md)
-- [ ] Reference ops: sample PDB audit + MVM supervision playbooks (MIT-safe)
-- [ ] Sibling agents: other reference agents exposing other LUMEN faculties
+- [x] Identity card (gabinete design round + technical review, 2026-09)
+- [x] Registered in `^PERSONALITY("astrid")` + ecosystem routing (poli:astrid)
+- [x] Repo skeleton: reproducible INIT, verify.m, harness, docs (EN/ES)
+- [ ] `template/` derived-agent skeleton (validates the template is reusable)
+- [ ] Full standalone inbox wiring (MVM native agent loop) + publish checklist
+- [ ] **Publish to GitHub (MIT)** — last step, when everything is green
+
+## Sibling agents
+
+Astrid is the first **reference agent**. Planned siblings will expose other
+LUMEN faculties (e.g. one focused on MVM process supervision, one on PDB
+operations). Each is its own MIT repo with the same skeleton — see
+`docs/BUILD_YOUR_OWN.md`.
 
 ---
 

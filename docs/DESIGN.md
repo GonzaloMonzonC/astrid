@@ -53,25 +53,63 @@ leer, ejecutar y replicar el ciclo.
 
 ## Registro en Poli
 
-La identidad se siembra en el MVM de Poli (ver `poli-personalities` skill):
+La identidad se siembra en el MVM de Poli desde la **fuente reproducible**
+(`src/astrid.m` — INIT siembra la entrada canónica exacta):
 
 ```m
-S ^PERSONALITY("astrid","identity")="..."
-S ^PERSONALITY("astrid","provider")="deepseek"
-S ^PERSONALITY("astrid","model")="deepseek-v4-flash"
-S ^PERSONALITY("astrid","is_active")="1"
+D INIT^ASTRID        ; fill-missing (idempotente)
+D INIT^ASTRID(1)     ; overwrite / reset completo
 ```
 
-Para convertirla en agente M-native de pleno derecho (chat/inbox propios):
-registro en `^MVM("agents","astrid",...)` con rutina (ver skill
-`mvm-native-agents`). Ese paso usará `src/astrid.m` de este repo como rutina.
+Verificación: `tests/verify.m` (`D VERIFY^VERIFY` → PASS) contra un PDB
+desechable. En el runtime de Cadences Lab quedó registrada vía
+`^PERSONALITY("astrid")` + `^AGENTES("routing","astrid")` = `poli:astrid` +
+descubrimiento `^MVM("agents","astrid")`; chat verificado por modo de
+personalidad y por routing del ecosistema.
+
+## Interfaz del agente con lumen (contrato)
+
+| Entry point | Entrada | Salida | Uso |
+|---|---|---|---|
+| `ASTRID^ASTRID` | — (lee `^PERSONALITY("astrid",*)`) | estado: versión, active, identity_len, counts, provider/model | health check |
+| `INIT^ASTRID` / `INIT^ASTRID(1)` | opcional force=1 | siembra `^PERSONALITY("astrid")` | registro reproducible |
+| `VERIFY^VERIFY` | — | PASS/FAIL (identity ≥600, active, provider/model) | test |
+| `AUDIT^ASTRID` | `^ASTRID("audit_ns")` o default `^ANGI` | observación → implicación → pregunta | demo de auditoría (solo lectura) |
+| `$$COUNT^ASTRID(ns)` | nombre de lista (capabilities, critical_rules…) | número de subnodos | helper |
+
+Facultades lumen por capa (revisión técnica 2026-09): **mínimo viable** =
+MVM directo (núcleo M + PDB del operador); **producción** = servidores MCP
+por perfil auditor con este orden de prioridad: PDB (memoria/evidencia) →
+thinking (razonamiento largo) → filesystem/web (insumos externos,
+restringidos). `pip lumen-mcp` solo cuando un orquestador externo deba
+invocarla.
+
+## Modelo y temperatura
+
+- Chat/operación: `deepseek-v4-flash`, temp 0.3 (verificado).
+- Auditorías largas: mismo provider con **variante de mayor contexto**
+  configurable vía `^PERSONALITY("astrid","model")` o env por despliegue;
+  temp 0.2 si exige comparaciones numéricas literales. Nunca hardcodear la
+  decisión en código.
 
 ## Roadmap
 
 1. ~~Tarjeta de identidad (ronda gabinete)~~ ✅
 2. ~~Registro ^PERSONALITY~~ ✅  (identity_len=646, active=1)
-3. ~~Esqueleto repo~~ ✅
-4. `astrid init` — bootstrap: identity + spawn MVM + registro ^AGENTES
-5. Harness LUMEN (MCP servers) + docs/BUILD_YOUR_OWN.md
-6. Ops de referencia: auditoría PDB de ejemplo + supervisión MVM
-7. Agentes hermanos: otros agentes de referencia con otras facultades
+3. ~~Esqueleto repo~~ ✅  (INIT reproducible + verify.m + harness, verificado en MVM local)
+4. ~~Revisión técnica (roberto/pamies, smith_5)~~ ✅ — checklist MIT-clean en este doc
+5. `astrid init` — bootstrap: identity + spawn MVM + registro ^AGENTES (ya registrada en runtime Cadences; pendiente versión standalone)
+6. Harness LUMEN fino + docs/BUILD_YOUR_OWN.md (guía draft hecha; validar en máquina limpia)
+7. `template/` — agente derivado con nombres neutros que valide la plantilla
+8. Publicar GitHub (MIT) — SOLO cuando el checklist de publicación esté verde
+
+## Checklist de publicación (MIT-clean)
+
+- [ ] `git grep -iE "api[_-]?key|token|secret|password|BEGIN .*PRIVATE" HEAD $(git rev-list --all)` → vacío
+- [ ] Sin rutas absolutas de la máquina de origen en src/docs/tests
+- [ ] Sin lore privado (URLs internas, agentes internos, diarios, lógica de negocio)
+- [ ] verify.m pasa en PDB desechable desde entorno limpio (sin servicios externos)
+- [ ] Harness corre con solo `pip install lumen-mcp` (o fallback documentado a clone lumen-protocol)
+- [ ] README EN/ES + LICENSE + SECURITY + CONTRIBUTING + CHANGELOG presentes
+- [ ] Dependencia lumen-protocol declarada (MIT) + versión/commit de referencia
+- [ ] Identity ASCII ≤1400 chars sincronizada entre src/astrid.m y personalities/astrid.md
