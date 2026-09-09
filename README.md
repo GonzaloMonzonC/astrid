@@ -52,9 +52,11 @@ astrid/
 reference agent **on top** of it; pin a release/commit when you fork.
 Reference for this version: lumen-protocol `main` (2026-09).
 
-1. Get an M runtime: build the Rust MVM
-   (`implementations/rust/lumen-m-light`, `cargo build --release`) or
-   `pip install lumen-mcp` (published bindings).
+1. Get an M runtime: build the Rust MVM from a lumen-protocol clone
+   (`implementations/rust/lumen-m-light`, `cargo build --release`, DLL into
+   `implementations/mcp-servers/pdb/`), or point `LUMEN_MLIGHT_LIB` at an
+   existing `lumen_mlight.dll`. *(`pip install lumen-mcp` ships transport
+   bindings only — no MVM — as of 0.1.0.)*
 2. Load the routine and seed her (identity → `^PERSONALITY("astrid")`):
    ```m
    ; load src/astrid.m into your M routine path
@@ -78,9 +80,10 @@ Reference for this version: lumen-protocol `main` (2026-09).
 
 - [x] Identity card (gabinete design round + technical review, 2026-09)
 - [x] Registered in `^PERSONALITY("astrid")` + ecosystem routing (poli:astrid)
-- [x] Repo skeleton: reproducible INIT, verify.m, harness, docs (EN/ES)
-- [ ] `template/` derived-agent skeleton (validates the template is reusable)
-- [ ] Full standalone inbox wiring (MVM native agent loop) + publish checklist
+- [x] Repo skeleton: reproducible INIT, verify.m (parametric), harness, docs (EN/ES)
+- [x] Template validated: `examples/echo` derived with `template/render.py` + verified on MVM
+- [x] Harness validated on clean venv (lumen-protocol clone only)
+- [ ] Full standalone inbox wiring (MVM native agent loop)
 - [ ] **Publish to GitHub (MIT)** — last step, when everything is green
 
 ## Sibling agents

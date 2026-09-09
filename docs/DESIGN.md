@@ -99,8 +99,8 @@ invocarla.
 3. ~~Esqueleto repo~~ ✅  (INIT reproducible + verify.m + harness, verificado en MVM local)
 4. ~~Revisión técnica (roberto/pamies, smith_5)~~ ✅ — checklist MIT-clean en este doc
 5. `astrid init` — bootstrap: identity + spawn MVM + registro ^AGENTES (ya registrada en runtime Cadences; pendiente versión standalone)
-6. Harness LUMEN fino + docs/BUILD_YOUR_OWN.md (guía draft hecha; validar en máquina limpia)
-7. `template/` — agente derivado con nombres neutros que valide la plantilla
+6. Harness LUMEN fino + docs/BUILD_YOUR_OWN.md ✅ (validado en venv limpio 2026-09)
+7. ~~`template/` + agente derivado~~ ✅ — `examples/echo` generado con template/render.py y verificado (INIT + VERIFY PASS)
 8. Publicar GitHub (MIT) — SOLO cuando el checklist de publicación esté verde
 
 ## Checklist de publicación (MIT-clean)
@@ -109,7 +109,7 @@ invocarla.
 - [ ] Sin rutas absolutas de la máquina de origen en src/docs/tests
 - [ ] Sin lore privado (URLs internas, agentes internos, diarios, lógica de negocio)
 - [ ] verify.m pasa en PDB desechable desde entorno limpio (sin servicios externos)
-- [ ] Harness corre con solo `pip install lumen-mcp` (o fallback documentado a clone lumen-protocol)
+- [ ] Harness corre en venv limpio con solo clone lumen-protocol (validado 2026-09: status+audit OK)
 - [ ] README EN/ES + LICENSE + SECURITY + CONTRIBUTING + CHANGELOG presentes
 - [ ] Dependencia lumen-protocol declarada (MIT) + versión/commit de referencia
 - [ ] Identity ASCII ≤1400 chars sincronizada entre src/astrid.m y personalities/astrid.md

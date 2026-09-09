@@ -7,10 +7,13 @@
 ## 0. What you need
 
 - [lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol) — MIT:
-  build the Rust MVM (`implementations/rust/lumen-m-light`) or `pip install
-  lumen-mcp` for the published bindings.
+  build the Rust MVM (`implementations/rust/lumen-m-light`,
+  `cargo build --release`) and copy the DLL to
+  `implementations/mcp-servers/pdb/`. *(`pip install lumen-mcp` 0.1.0 = transport
+  bindings only, no MVM — a clone build or `LUMEN_MLIGHT_LIB` is required to
+  run routines.)*
 - Python 3.10+ (for the harness) and/or an M runtime that can load `.m`
-  routines (Poli, lumen-mvm, or any MUMPS with PDB).
+  routines (lumen-mvm, or any MUMPS with PDB).
 
 ## 1. Copy the skeleton
 

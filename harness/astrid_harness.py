@@ -11,9 +11,14 @@ Three modes (run what you have):
                 a chat personality mode (e.g. Poli's mode=astrid); not needed
                 for a standalone install.
 
-Requirements: lumen-protocol (https://github.com/GonzaloMonzonC/lumen-protocol)
-built with `cargo build --release --features minreq` (lumen_mlight.dll), or
-`pip install lumen-mcp` for the published bindings. Nothing else.
+Requirements: a lumen M runtime to execute the M routines. Two options:
+  1. local lumen-protocol clone (https://github.com/GonzaloMonzonC/lumen-protocol)
+     with the Rust MVM built (`cargo build --release` → lumen_mlight.dll,
+     copied to implementations/mcp-servers/pdb/), or
+  2. `LUMEN_MLIGHT_LIB` pointing at an existing lumen_mlight.dll.
+NOTE: `pip install lumen-mcp` (0.1.0) ships the transport/framing bindings
+only — it does NOT include the MVM. A clone build or DLL is required to run
+routines.
 
 Usage:
     python astrid_harness.py status
