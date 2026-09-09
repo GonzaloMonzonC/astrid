@@ -75,6 +75,8 @@ astrid/
 │   └── astrid_harness.py  status/audit runner (lumen-mcp or local clone)
 ├── docs/
 │   ├── DESIGN.md        Identity card, agent contract, cycle, publish checklist
+│   ├── STORY.md         The launch story: evidence hook, real-work audit, incidents
+│   ├── EVIDENCE_SCHEMA.md  Digest schema v1 + notary contract (design draft)
 │   └── BUILD_YOUR_OWN.md  step-by-step guide to build a derived agent
 └── tests/
     └── verify.m         Verification: identity exists, speaks, operates
