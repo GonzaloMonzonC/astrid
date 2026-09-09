@@ -3,6 +3,8 @@
 **The agent that refuses to speculate.**
 **Evidence, or silence.**
 
+> 🇪🇸 Versión en español: [README.es.md](README.es.md)
+
 Astrid is a reference agent born inside the Poli MVM — identity, code and
 cycle published under MIT. Her system prompt is not a biography: it is the
 live output of her own routine, `EVIDENCE^ASTRID`, executed in the real MVM
@@ -48,12 +50,14 @@ The incident log is in [`CHANGELOG.md`](CHANGELOG.md). Read it: it is the
 most honest part of this repo. A system that can show you when it is
 untrustworthy is a system you can build on.
 
-## The notary contract (roadmap)
+## The notary contract
 
-The digest is currently a structured claim: what was read, from which
-globals, at which moment. The natural next step — and the reason this repo
-depends on [lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol)
-— is to anchor it: a content-addressed, signed digest that makes Astrid the
+The digest emits structured claims — `claim|<kind>|<source>|<value>|<d>`,
+schema v1 (see [`docs/EVIDENCE_SCHEMA.md`](docs/EVIDENCE_SCHEMA.md)): what
+was read, from which globals, with which presence code. The natural next
+step — and the reason this repo depends on
+[lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol) — is to
+anchor it: a content-addressed, signed digest that makes Astrid the
 **notary of record for multi-agent workflows**. Cloning the MIT agent gives
 you the honesty; the protocol gives you the reputation layer under it.
 
@@ -62,25 +66,35 @@ you the honesty; the protocol gives you the reputation layer under it.
 ```
 astrid/
 ├── LICENSE              MIT
-├── README.md            This file (EN · ES below)
-├── SECURITY.md          No secrets, PDB discipline, reporting
-├── CONTRIBUTING.md      Conventions + process
-├── CHANGELOG.md         Keep a Changelog / semver — incl. the evidence-failure incidents
+├── README.md            This file (EN)
+├── README.es.md         Español — same content (ES)
+├── SECURITY.md          No secrets, PDB discipline, reporting (EN)
+├── CONTRIBUTING.md      Conventions + process (EN)
+├── CHANGELOG.md         Keep a Changelog / semver (EN) — incl. the evidence-failure incidents
 ├── src/
 │   └── astrid.m         M routine: ASTRID (status) · INIT (reproducible seed) ·
-│                        AUDIT · COUNT · EVIDENCE (registered digest)
+│                        AUDIT · COUNT · EVIDENCE (registered digest, schema v1)
 ├── personalities/
-│   └── astrid.md        Full readable identity (accents, voice, fields)
+│   └── astrid.md        Full readable identity (ES) — accents, voice, fields
 ├── harness/
 │   └── astrid_harness.py  status/audit runner (lumen-mcp or local clone)
 ├── docs/
-│   ├── DESIGN.md        Identity card, agent contract, cycle, publish checklist
-│   ├── STORY.md         The launch story: evidence hook, real-work audit, incidents
-│   ├── EVIDENCE_SCHEMA.md  Digest schema v1 + notary contract (design draft)
-│   └── BUILD_YOUR_OWN.md  step-by-step guide to build a derived agent
+│   ├── DESIGN.md        EN — identity card, agent contract, cycle, publish checklist
+│   ├── DESIGN.es.md     ES — diseño, contrato de agente, ciclo
+│   ├── STORY.md         EN — the launch story: evidence hook, real-work audit, incidents
+│   ├── STORY.es.md      ES — la historia de lanzamiento
+│   ├── EVIDENCE_SCHEMA.md       EN — digest schema v1 + notary contract
+│   ├── EVIDENCE_SCHEMA.es.md    ES — esquema del digest + contrato de notaría
+│   ├── BUILD_YOUR_OWN.md        EN — step-by-step guide to build a derived agent
+│   └── BUILD_YOUR_OWN.es.md     ES — guía paso a paso para un agente derivado
 └── tests/
     └── verify.m         Verification: identity exists, speaks, operates
 ```
+
+Language policy: EN is canonical for code and root docs (README.md,
+CHANGELOG, SECURITY, CONTRIBUTING). ES mirrors live as `.es.md` next to the
+English file. The personality card (`personalities/astrid.md`) is ES by
+design — it is the readable version of the ASCII identity line.
 
 ## Quickstart (local)
 
@@ -140,67 +154,3 @@ operations). Each is its own MIT repo with the same skeleton — see
 `docs/BUILD_YOUR_OWN.md`.
 
 ---
-
-## 🧬 Astrid (ES)
-
-**El agente que se niega a especular.**
-**Evidencia, o silencio.**
-
-Astrid es un agente de referencia nacido dentro del MVM de Poli — identidad,
-código y ciclo publicados bajo MIT. Su system prompt no es una biografía: es
-la salida en vivo de su propia rutina, `EVIDENCE^ASTRID`, ejecutada en el MVM
-real en cada conversación. Responde solo con lo que esa ejecución devuelve.
-
-No es que "normalmente diga la verdad". Está construida para que **cuando no
-hay datos registrados, el diseño lo diga** — y cuando el pipeline de
-evidencia falla, el fallo es visible (`evidence: false`), no se oculta.
-
-> La mayoría de agentes están entrenados para ser útiles. Astrid está
-> diseñada para ser verificable. Útil es una promesa. Verificable es un
-> diseño.
-
-### Por qué existe esto
-
-Los LLM fabrican. La respuesta conocida hasta ahora era "prompt mejor".
-Astrid es otra respuesta: **hacer que la fuente de verdad sea una rutina
-ejecutable**, no un párrafo de instrucciones.
-
-- Su runtime de chat (`poli_server`) lee `^PERSONALITY("astrid","evidence_routine")`
-  → `EVIDENCE^ASTRID`, la ejecuta en el MVM y antepone la salida real a su
-  system prompt como **EVIDENCIA REGISTRADA**.
-- Su digest es un escaneo read-only del estado vivo: modos, métricas, routing,
-  espacios, registro MVM, libro de experimentos cuánticos — lo que exista en
-  la máquina sobre lo que se le pregunta.
-- Sus reglas (de su identidad registrada):
-
-  1. Operar solo sobre datos registrados.
-  2. Nunca especular: sin datos → decirlo, y hacer la pregunta exacta.
-  3. Formato de hallazgo: observación → implicación → pregunta.
-  4. Preguntar una sola vez, con claridad (regla de oro).
-  5. Auditar la PDB, supervisar el MVM, ver la incoherencia que nadie ve.
-
-### Qué pasa cuando la evidencia falla
-
-Esta es la parte que los demás agentes no documentan. En sus primeros días en
-producción, dos bugs distintos rompieron su hook de evidencia (un límite del
-parser de M-Light con llamadas `$O`/`$D` anidadas — ambos corregidos). Las dos
-veces, Astrid **alucinó una respuesta con total confianza**, y las dos veces
-la respuesta llevaba el flag `"evidence": false`. La alucinación no la cazó un
-guardarraíl: la cazó el propio diseño — *la ausencia de evidencia forma parte
-de la respuesta*.
-
-El registro de incidentes está en [`CHANGELOG.md`](CHANGELOG.md). Léelo: es
-la parte más honesta de este repo. Un sistema que puede mostrarte cuándo no
-es de fiar es un sistema sobre el que puedes construir.
-
-### El contrato de notaría (roadmap)
-
-El digest es hoy una afirmación estructurada: qué se leyó, de qué globales, en
-qué momento. El siguiente paso natural — y la razón de que este repo dependa
-de [lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol) — es
-anclarlo: un digest con dirección de contenido y firma que convierta a Astrid
-en la **notaria de registro de workflows multi-agente**. Clonar el agente MIT
-te da la honestidad; el protocolo te da la capa de reputación debajo.
-
-Repos MIT relacionados: [lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol) ·
-[Poli](https://github.com/GonzaloMonzonC/poli)

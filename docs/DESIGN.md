@@ -1,145 +1,143 @@
 # Astrid — DESIGN
 
-## Resumen
+## Summary
 
-Astrid es el **agente de referencia** de lumen-protocol: un repo MIT separado
-que depende del metal (lumen-protocol) y demuestra sus facultades en
-operación real. Es la primera nativa de Poli cuyo código y personalidad se
-publican en abierto.
+Astrid is the **reference agent** of lumen-protocol: a separate MIT repo
+that depends on the metal (lumen-protocol) and demonstrates its faculties
+in real operation. She is the first Poli native whose code and personality
+are published in the open.
 
-Capas:
+Layers:
 
 ```
 ┌─────────────────────────────────────────────┐
-│  astrid (MIT)  — agente de referencia       │  este repo
-│  código M + identidad + docs + tutorial     │
+│  astrid (MIT)  — reference agent            │  this repo
+│  M code + identity + docs + tutorial        │
 ├─────────────────────────────────────────────┤
 │  lumen-protocol (MIT) — open metal          │
-│  protocolo · PDB · M-Light/MVM · Poli+Smith │
-│  · 115 tools MCP                            │
+│  protocol · PDB · M-Light/MVM · Poli+Smith  │
+│  · 115 MCP tools                            │
 ├─────────────────────────────────────────────┤
-│  ECOS (propietario) · Cadences Lab (privado)│
+│  ECOS (proprietary) · Cadences Lab (private)│
 └─────────────────────────────────────────────┘
 ```
 
-Regla MIT: en este repo **nunca** entra lore privado del ecosistema (rutas
-internas, agentes internos con criterio de negocio, claves, diarios). Lo que
-se publique aquí debe poder ejecutarlo cualquiera con solo lumen-protocol.
+MIT rule: **no** private ecosystem lore ever enters this repo (internal
+paths, internal agents with business judgment, keys, diaries). Anything
+published here must be runnable by anyone with only lumen-protocol.
 
-## Ciclo operativo (el ciclo es el tutorial)
+## Operational cycle (the cycle is the tutorial)
 
-| Fase | Entrada | Salida |
+| Phase | Input | Output |
 |---|---|---|
-| OBSERVAR | estado de PDB, ^GLOBALES, procesos MVM | señales y variaciones |
-| CONTRASTAR | señales vs rutinas y modelos registrados | patrones, incoherencias, sospechas |
-| PREGUNTAR | sospecha sin certeza | pregunta exacta al responsable u operador |
-| ACTUAR | certeza + mandato | orquestación o corrección bajo protocolo |
-| REGISTRAR | toda acción y hallazgo | trazo visible en PDB y repo |
-| EXPONER | trazo del caso | documentación tutorial MIT |
+| OBSERVE | PDB state, ^GLOBALS, MVM processes | signals and variations |
+| CONTRAST | signals vs. registered routines and models | patterns, inconsistencies, suspicions |
+| ASK | suspicion without certainty | exact question to the responsible party or operator |
+| ACT | certainty + mandate | orchestration or correction under protocol |
+| RECORD | every action and finding | visible trace in PDB and repo |
+| EXPOSE | case trace | MIT tutorial documentation |
 
-Sin fases ocultas: cada fase produce artefactos públicos. Cualquiera puede
-leer, ejecutar y replicar el ciclo.
+No hidden phases: every phase produces public artifacts. Anyone can read,
+execute, and replicate the cycle.
 
-## Contrato de evidencia (en producción)
+## Evidence contract (in production)
 
-El chat de Astrid no confía en el LLM para recordar quién es: confía en una
-rutina. `^PERSONALITY("astrid","evidence_routine")` = `EVIDENCE^ASTRID`;
-`poli_server` la ejecuta en el MVM real en cada conversación y antepone su
-salida (digest read-only del estado registrado) al system prompt como
-EVIDENCIA REGISTRADA. Sin esa salida, la respuesta viaja con
-`"evidence": false` — visible, no oculto. Dos incidentes de hook roto
-(parser M-Light: `$O`/`$D` anidados en línea) están documentados en el
-CHANGELOG: Astrid alucinó y el flag la delató. La transparencia del fallo es
-parte del diseño. Pitfall M-Light (verificado): nunca funciones M anidadas
-como subíndice o en concatenación — usar variable intermedia.
+Astrid's chat does not trust the LLM to remember who she is: it trusts a
+routine. `^PERSONALITY("astrid","evidence_routine")` = `EVIDENCE^ASTRID`;
+`poli_server` runs it in the real MVM on every conversation and prepends its
+output (a read-only digest of the registered state) to the system prompt as
+REGISTERED EVIDENCE. Without that output, the reply travels with
+`"evidence": false` — visible, not hidden. Two broken-hook incidents
+(M-Light parser: inline nested `$O`/`$D`) are documented in the CHANGELOG:
+Astrid hallucinated and the flag gave her away. Failure transparency is part
+of the design. M-Light pitfall (verified): never nest M functions as a
+subscript or in concatenation — use an intermediate variable.
 
-## Contrato de notaría (schema v1 emitido; anclaje en roadmap)
+## Notary contract (schema v1 emitted; anchoring on the roadmap)
 
-El digest ya emite claims estructuradas (`claim|kind|source|value|d`) desde
-2026-09-09 — ver `docs/EVIDENCE_SCHEMA.md`. La afirmación estructurada (qué
-se leyó, de qué globales, con qué $D) es el cimiento. Pendiente: verifier
-harness (formato + existencia de fuentes + estabilidad) y el anclaje con
-dirección de contenido y firma vía lumen-protocol. Posicionamiento: Astrid
-como notaria de registro para workflows multi-agente; el agente MIT da la
-honestidad, lumen-protocol la capa de reputación.
+The digest has been emitting structured claims (`claim|kind|source|value|d`)
+since 2026-09-09 — see `docs/EVIDENCE_SCHEMA.md`. The structured assertion
+(what was read, from which globals, with which $D) is the foundation.
+Pending: verifier harness (format + source existence + stability) and the
+anchoring with content address and signature via lumen-protocol.
+Positioning: Astrid as notary of record for multi-agent workflows; the MIT
+agent provides the honesty, lumen-protocol the reputation layer.
 
-## Notas de diseño (ronda gabinete, 2026-09-09)
+## Design notes (cabinet round, 2026-09-09)
 
-- **Roberto** (estructura): ciclo de 6 fases; 5 reglas + operar solo sobre
-  datos registrados. Identidad funcional ~646 chars ASCII.
-- **Javier** (relaciones): Astrid es la hermana mayor, no la madre; hace code
-  review de personalidad a agentes nuevos; empatía estructurada; formato de
-  hallazgo observación → implicación → pregunta; regla de oro: pregunta una
-  sola vez, con claridad.
-- **Pendiente**: faceta de implementación a revisar con Porto (harness,
-  esqueleto fino del repo, provider/model definitivo).
+- **Roberto** (structure): 6-phase cycle; 5 rules + operate only on
+  registered data. Functional identity ~646 ASCII chars.
+- **Javier** (relationships): Astrid is the big sister, not the mother; she
+  does personality code review on new agents; structured empathy; finding
+  format observation → implication → question; golden rule: ask only once,
+  with clarity.
+- **Pending**: implementation facet to review with Porto (harness, lean
+  repo skeleton, definitive provider/model).
 
-## Registro en Poli
+## Registration in Poli
 
-La identidad se siembra en el MVM de Poli desde la **fuente reproducible**
-(`src/astrid.m` — INIT siembra la entrada canónica exacta):
+The identity is seeded into Poli's MVM from the **reproducible source**
+(`src/astrid.m` — INIT seeds the exact canonical entry):
 
 ```m
-D INIT^ASTRID        ; fill-missing (idempotente)
-D INIT^ASTRID(1)     ; overwrite / reset completo
+D INIT^ASTRID        ; fill-missing (idempotent)
+D INIT^ASTRID(1)     ; overwrite / full reset
 ```
 
-Verificación: `tests/verify.m` (`D VERIFY^VERIFY` → PASS) contra un PDB
-desechable. En el runtime de Cadences Lab quedó registrada vía
+Verification: `tests/verify.m` (`D VERIFY^VERIFY` → PASS) against a
+disposable PDB. In the Cadences Lab runtime she is registered via
 `^PERSONALITY("astrid")` + `^AGENTES("routing","astrid")` = `poli:astrid` +
-descubrimiento `^MVM("agents","astrid")`; chat verificado por modo de
-personalidad y por routing del ecosistema.
+discovery `^MVM("agents","astrid")`; chat verified by personality mode and
+by ecosystem routing.
 
-## Interfaz del agente con lumen (contrato)
+## Agent interface with lumen (contract)
 
-| Entry point | Entrada | Salida | Uso |
+| Entry point | Input | Output | Use |
 |---|---|---|---|
-| `ASTRID^ASTRID` | — (lee `^PERSONALITY("astrid",*)`) | estado: versión, active, identity_len, counts, provider/model | health check |
-| `INIT^ASTRID` / `INIT^ASTRID(1)` | opcional force=1 | siembra `^PERSONALITY("astrid")` | registro reproducible |
+| `ASTRID^ASTRID` | — (reads `^PERSONALITY("astrid",*)`) | state: version, active, identity_len, counts, provider/model | health check |
+| `INIT^ASTRID` / `INIT^ASTRID(1)` | optional force=1 | seeds `^PERSONALITY("astrid")` | reproducible registration |
 | `VERIFY^VERIFY` | — | PASS/FAIL (identity ≥600, active, provider/model) | test |
-| `EVIDENCE^ASTRID` | devuelve digest de estado registrado | evidencia para el chat (hook `evidence_routine`) | |
-| `AUDIT^ASTRID` | `^ASTRID("audit_ns")` o default `^ANGI` | observación → implicación → pregunta | demo de auditoría (solo lectura) |
-| `$$COUNT^ASTRID(ns)` | nombre de lista (capabilities, critical_rules…) | número de subnodos | helper |
+| `EVIDENCE^ASTRID` | returns digest of registered state | evidence for chat (hook `evidence_routine`) | |
+| `AUDIT^ASTRID` | `^ASTRID("audit_ns")` or default `^ANGI` | observation → implication → question | audit demo (read-only) |
+| `$$COUNT^ASTRID(ns)` | list name (capabilities, critical_rules…) | number of subnodes | helper |
 
-Facultades lumen por capa (revisión técnica 2026-09): **mínimo viable** =
-MVM directo (núcleo M + PDB del operador); **producción** = servidores MCP
-por perfil auditor con este orden de prioridad: PDB (memoria/evidencia) →
-thinking (razonamiento largo) → filesystem/web (insumos externos,
-restringidos). `pip lumen-mcp` solo cuando un orquestador externo deba
-invocarla.
+Lumen faculties by layer (technical review 2026-09): **minimum viable** =
+direct MVM (M core + the operator's PDB); **production** = MCP servers per
+auditor profile in this priority order: PDB (memory/evidence) → thinking
+(long reasoning) → filesystem/web (external inputs, restricted).
+`pip lumen-mcp` only when an external orchestrator must invoke her.
 
-## Modelo y temperatura
+## Model and temperature
 
-- Chat/operación: `deepseek-v4-flash`, temp 0.3 (verificado).
-- Auditorías largas: mismo provider con **variante de mayor contexto**
-  configurable vía `^PERSONALITY("astrid","model")` o env por despliegue;
-  temp 0.2 si exige comparaciones numéricas literales. Nunca hardcodear la
-  decisión en código.
+- Chat/operation: `deepseek-v4-flash`, temp 0.3 (verified).
+- Long audits: same provider with a **larger-context variant** configurable
+  via `^PERSONALITY("astrid","model")` or per-deployment env; temp 0.2 if it
+  requires literal numeric comparisons. Never hardcode the decision in code.
 
 ## Roadmap
 
-1. ~~Tarjeta de identidad (ronda gabinete)~~ ✅
-2. ~~Registro ^PERSONALITY~~ ✅  (identity_len=646, active=1)
-3. ~~Esqueleto repo~~ ✅  (INIT reproducible + verify.m + harness, verificado en MVM local)
-4. ~~Revisión técnica (roberto/pamies, smith_5)~~ ✅ — checklist MIT-clean en este doc
-5. `astrid init` — bootstrap: identity + spawn MVM + registro ^AGENTES (ya registrada en runtime Cadences; pendiente versión standalone)
-6. Harness LUMEN fino + docs/BUILD_YOUR_OWN.md ✅ (validado en venv limpio 2026-09)
-7. ~~`template/` + agente derivado~~ ✅ — `examples/echo` generado con template/render.py y verificado (INIT + VERIFY PASS)
-8. ~~Publicar GitHub (MIT)~~ ✅ — público en main (2026-09-09), checklist MIT-clean verde
-9. ~~Evidence hook en producción~~ ✅ — chat responde solo de `EVIDENCE^ASTRID`; `evidence:false` visible (incidentes en CHANGELOG)
-10. ~~README reposicionado~~ ✅ — "Evidence, or silence": agente que se niega a especular; docs STORY + EVIDENCE_SCHEMA
-11. ~~Schema v1 emisor~~ ✅ — digest con claims `claim|kind|source|value|d` verificado en runtime
-12. Verifier harness — formato de claims, existencia de fuentes contra snapshot PDB, estabilidad (pendiente)
-13. Anclaje notaría — cid + firma + ledger `^EVIDENCE` vía lumen-protocol (pendiente, ver EVIDENCE_SCHEMA.md §3)
+1. ~~Identity card (cabinet round)~~ ✅
+2. ~~^PERSONALITY registration~~ ✅  (identity_len=646, active=1)
+3. ~~Repo skeleton~~ ✅  (reproducible INIT + verify.m + harness, verified on local MVM)
+4. ~~Technical review (roberto/pamies, smith_5)~~ ✅ — MIT-clean checklist in this doc
+5. `astrid init` — bootstrap: identity + MVM spawn + ^AGENTES registration (already registered in the Cadences runtime; standalone version pending)
+6. Lean LUMEN harness + docs/BUILD_YOUR_OWN.md ✅ (validated on clean venv 2026-09)
+7. ~~`template/` + derived agent~~ ✅ — `examples/echo` generated with template/render.py and verified (INIT + VERIFY PASS)
+8. ~~Publish to GitHub (MIT)~~ ✅ — public on main (2026-09-09), MIT-clean checklist green
+9. ~~Evidence hook in production~~ ✅ — chat responds only from `EVIDENCE^ASTRID`; `evidence:false` visible (incidents in CHANGELOG)
+10. ~~README repositioned~~ ✅ — "Evidence, or silence": an agent that refuses to speculate; STORY + EVIDENCE_SCHEMA docs
+11. ~~Schema v1 emitter~~ ✅ — digest with claims `claim|kind|source|value|d`, verified in runtime
+12. Verifier harness — claim format, source existence against a PDB snapshot, stability (pending)
+13. Notary anchoring — cid + signature + `^EVIDENCE` ledger via lumen-protocol (pending, see EVIDENCE_SCHEMA.md §3)
 
-## Checklist de publicación (MIT-clean)
+## Publication checklist (MIT-clean)
 
-- [x] `git grep` secretos historia completa → vacío (2026-09-09)
-- [x] Sin rutas absolutas de la máquina de origen en src/docs/tests
-- [x] Sin lore privado (URLs internas, agentes internos, diarios, lógica de negocio)
-- [x] verify.m pasa en PDB desechable desde entorno limpio (sin servicios externos)
-- [x] Harness corre en venv limpio con solo clone lumen-protocol (validado 2026-09: status+audit OK)
-- [x] Suite completa `python tests/run_tests.py` → 12/12 verde (2026-09-09)
-- [x] README EN/ES + LICENSE + SECURITY + CONTRIBUTING + CHANGELOG presentes
-- [x] Dependencia lumen-protocol declarada (MIT) + versión/commit de referencia
-- [x] Identity ASCII 646 chars sincronizada entre src/astrid.m y personalities/astrid.md (test automatizado)
+- [x] `git grep` secrets across full history → empty (2026-09-09)
+- [x] No absolute paths from the source machine in src/docs/tests
+- [x] No private lore (internal URLs, internal agents, diaries, business logic)
+- [x] verify.m passes on disposable PDB from a clean environment (no external services)
+- [x] Harness runs in a clean venv with only a lumen-protocol clone (validated 2026-09: status+audit OK)
+- [x] Full suite `python tests/run_tests.py` → 12/12 green (2026-09-09)
+- [x] README EN/ES + LICENSE + SECURITY + CONTRIBUTING + CHANGELOG present
+- [x] lumen-protocol dependency declared (MIT) + reference version/commit
+- [x] ASCII 646-char identity synchronized between src/astrid.m and personalities/astrid.md (automated test)
