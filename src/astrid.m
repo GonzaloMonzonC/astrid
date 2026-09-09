@@ -98,7 +98,7 @@ EVIDENCE ; digest de estado REGISTRADO (read-only) para el system prompt del cha
        ; esta salida como UNICA fuente de datos — no debe inventar fuera de ella.
        ; Secciones: estado, ^ANGI, ^SPACE (bindings de datos), ^MVM (capa de
        ; virtualizacion de agentes M-native), routing.
-       N ev,mode,n,k,vo,al,lw,ag,s,a
+       N ev,mode,n,k,vo,al,lw,ag,s,a,nc,nj,q,uk
        S mode=$G(^ACTIVE,"creative")
        S n=0
        S k=$O(^ANGI(""))
@@ -129,6 +129,12 @@ EVIDENCE ; digest de estado REGISTRADO (read-only) para el system prompt del cha
        . S a=$O(^MVM("agents",a))
        S ev=ev_$C(10)_"^MVM(agents): "_n_" clave(s) registradas"
        S ev=ev_$C(10)_"^VIRTUAL y ^BIND: no existen en este runtime (la virtualizacion vive en ^MVM y los binds en ^SPACE)"
+       S nc=0 S q=$O(^QUANTUM("colapso","")) F  Q:q=""  S nc=nc+1 S q=$O(^QUANTUM("colapso",q))
+       S nj=0 S q=$O(^QUANTUM("job","")) F  Q:q=""  S nj=nj+1 S q=$O(^QUANTUM("job",q))
+       S ev=ev_$C(10)_"^QUANTUM: colapso="_nc_" job="_nj_" (rama colapso+job)"
+       S uk=$O(^QUANTUM("colapso",""),-1)
+       S ev=ev_$C(10)_"^QUANTUM ultimo colapso: "_$E($G(^QUANTUM("colapso",uk)),1,110)
+       S ev=ev_$C(10)_"^QUANTUM(ultimo) y ^QUANTUM(stats): ramas SIN datos"
        S ev=ev_$C(10)_"REGLA: responde SOLO con estos datos registrados; si la pregunta necesita algo fuera de ellos, dilo y sugiere ejecutar la rutina adecuada."
        Q ev
 
