@@ -132,7 +132,7 @@ auditor profile in this priority order: PDB (memory/evidence) → thinking
 10. ~~README repositioned~~ ✅ — "Evidence, or silence": an agent that refuses to speculate; STORY + EVIDENCE_SCHEMA docs
 11. ~~Schema v1 emitter~~ ✅ — digest with claims `claim|kind|source|value|d`, verified in runtime
 12. ~~Verifier harness~~ ✅ — tests/verify_claims.py (AC-1..AC-4): claim format, source existence, known kinds, stability; wired into the suite as a canary
-13. Notary anchoring — cid + signature + `^EVIDENCE` ledger via lumen-protocol (pending, see EVIDENCE_SCHEMA.md §3)
+13. ~~Notary anchoring~~ ✅ — cid (sha256 del digest) + firma HMAC (`^CONFIG("ddp_hmac_key")`, esquema `_hmac_sign`) + ledger `^EVIDENCE(cid)` en el runtime (hook `_evidence_block` de poli_server, lumen-protocol); verifier autocontenido `tests/verify_anchor.py`; contrato en EVIDENCE_SCHEMA.md §3-4
 
 ## Publication checklist (MIT-clean)
 

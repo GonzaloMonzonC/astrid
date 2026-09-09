@@ -4,6 +4,23 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the repo uses semantic
 versioning.
 
+## [0.3.1] — 2026-09-09
+
+### Added
+- **Notary anchor verifier**: `tests/verify_anchor.py` — self-contained check
+  of the anchor contract (EVIDENCE_SCHEMA.md §3): cid = sha256(digest),
+  signature HMAC-SHA256 (`ts + cid + secret`, the ecosystem `_hmac_sign`
+  scheme), ledger `^EVIDENCE(cid)` = `sig|ts|routine` + digest line-by-line
+  under `^EVIDENCE(cid,"digest",n)`. Verifies cid stability, ledger shape,
+  signature validity and digest round-trip with a throwaway TEST key (real
+  keys never enter the repo). The runtime side (lumen-protocol
+  `poli_server._evidence_block`) anchors every production digest at
+  generation time using `^CONFIG("ddp_hmac_key")`.
+- EVIDENCE_SCHEMA.md (+ ES) §3-4: anchor implemented, open questions
+  resolved (shared-key start, whole-digest signing, flat `^EVIDENCE(cid)`
+  ledger, version inside the signed payload). DESIGN.md (+ ES) roadmap
+  item 13 done.
+
 ## [0.3.0] — 2026-09-09
 
 ### Added

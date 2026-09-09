@@ -6,8 +6,9 @@ _Cómo la evidencia registrada de Astrid se convierte en un claim legible por m�
 
 Status: **emisor en producción (2026-09-09, verificado en el MVM real)**.
 `EVIDENCE^ASTRID` emite claims `claim|<kind>|<source>|<value>|<d>`
-parseables (digest de producción ≈ 25 claims con el registro MCP de 5 workers). El digest es canario de la suite (20 checks). Pendiente: verifier harness (AC-2..AC-4)
-y el anclaje (sección 3).
+parseables (digest de producción ≈ 25 claims con el registro MCP de 5 workers). El digest es canario de la suite (20 checks). El anclaje — cid + firma +
+ledger `^EVIDENCE` — está implementado en el runtime (ver sección 3); el
+verificador autocontenido es `tests/verify_anchor.py`.
 
 ---
 
@@ -78,35 +79,51 @@ Reglas:
    en profundidad para el rol de notaría).
 3. **`evidence:true|false` forma parte del payload**, siempre presente.
 
-## 3. Anclaje (siguiente paso, lumen-protocol)
+## 3. Anclaje (implementado 2026-09-09, runtime lumen-protocol)
 
-Los claims formalizados siguen siendo auto-reportados por el runtime que los
-produjo. El anclaje añade verificabilidad externa:
+Los claims formalizados eran auto-reportados por el runtime que los produjo.
+El anclaje añade verificabilidad externa — implementado en `poli_server`
+(lumen-protocol), dentro del hook de evidencia (`_evidence_block`), de modo
+que **cada digest emitido en producción queda anclado en el momento de
+generarse**:
 
-- **Direccionado por contenido**: digest → hash estable (`cid`). Dos agentes
-  que comparan sus `cid` saben que vieron el mismo estado.
-- **Firmado**: clave del runtime → firma sobre `cid + ts`. Un verificador
-  (cualquier otro agente del mesh, o un cron) puede confirmar quién produjo
-  el digest y cuándo.
-- **Ledger**: añadir el `cid` a la PDB compartida (p. ej. `^EVIDENCE(cid)`)
-  para que el rastro sea inspeccionable, no solo afirmado.
+- **Direccionado por contenido**: `cid = sha256(digest)` (hex). Dos agentes
+  que comparan sus `cid` saben que vieron el mismo estado; estado idéntico →
+  digest idéntico → `cid` idéntico (la estabilidad es canario de la suite).
+- **Firmado**: clave del runtime `^CONFIG("ddp_hmac_key")` → HMAC-SHA256
+  (`ts + cid + secret`, el esquema estándar `_hmac_sign` del ecosistema).
+  Cualquier agente con la clave compartida puede confirmar quién produjo el
+  digest y cuándo (el ts se guarda junto a la firma).
+- **Ledger**: append-only `^EVIDENCE(cid) = "<sig>|<ts>|<rutina>"` con el
+  digest línea a línea en `^EVIDENCE(cid,"digest",n)` (M-nativo, sin saltos
+  de línea incrustados). Mismo estado → mismo cid → la fila ya existe → sin
+  duplicados (dedup natural). El anclaje nunca rompe el chat: los fallos son
+  silenciosos.
+- **Verificador**: `tests/verify_anchor.py` (MIT, autocontenido) replica el
+  anclaje del runtime en una PDB desechable con una clave DE PRUEBA y
+  comprueba estabilidad del cid, forma del ledger, validez de la firma y
+  round-trip del digest. La clave real nunca entra en el repo.
 
-Por qué lumen-protocol: el MVM ya aporta el límite de ejecución, la PDB el
+Por qué lumen-protocol: el MVM aporta el límite de ejecución, la PDB el
 ledger compartido y M-Light el runtime portable. Astrid (MIT) aporta el
 diseño honesto; lumen-protocol aporta la capa que hace la honestidad
 **demostrable entre agentes** — la capa de reputación bajo una licencia
 permisiva.
 
-## 4. Preguntas abiertas (para el equipo)
+## 4. Preguntas abiertas (resueltas 2026-09-09)
 
-1. Gestión de claves: ¿qué clave del runtime firma los digests y cómo
-   verifican los workers (Hermes, Tom, cron) sin una PKI? (¿arrancar con
-   HMAC de clave compartida, rotar por host?)
-2. Granularidad: ¿firmar el digest completo o por claim (para que un
-   verificador pueda aceptar subconjuntos de claims)?
-3. ¿Pertenece `^EVIDENCE` al namespace público de lumen-protocol o a un
-   namespace por agente?
-4. Versionado del esquema: `AstridSchema.v1` — ¿dónde vive el registro?
+1. Gestión de claves → **arranque con clave compartida**: el runtime firma
+   con la `^CONFIG("ddp_hmac_key")` existente (la misma que ya autentica las
+   llamadas a workers). Rotación = rotar el global; sin PKI por ahora.
+2. Granularidad → **digest completo**: un `cid` por digest. La firma por
+   claim sigue siendo candidata si algún día se necesita verificación por
+   subconjuntos.
+3. Namespace del ledger → **`^EVIDENCE(cid)` plano**: los cids sha256 son
+   únicos entre agentes por construcción; la fila cabecera guarda la rutina
+   que produjo cada digest.
+4. Versionado del esquema → el header del digest lleva la versión del agente
+   (`Astrid v0.3.0 | ...`), así que la versión viaja dentro del payload
+   firmado; sin registro separado para v1.
 
 ## 5. Criterios de aceptación para v1
 

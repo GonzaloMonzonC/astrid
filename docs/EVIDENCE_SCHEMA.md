@@ -5,8 +5,9 @@ _How Astrid's registered evidence becomes a machine-readable claim._
 Status: **emitter in production (2026-09-09, verified on the real MVM)**.
 `EVIDENCE^ASTRID` emits parseable claims `claim|<kind>|<source>|<value>|<d>`
 (production digest ≈ 25 claims with the 5-worker MCP register). The digest
-is a canary in the test suite (20 checks). Pending: verifier harness
-(AC-2..AC-4 below) and the anchor (section 3).
+is a canary in the test suite (20 checks). The anchor — cid + signature +
+`^EVIDENCE` ledger — is implemented in the runtime (see section 3); the
+self-contained verifier is `tests/verify_anchor.py`.
 
 ---
 
@@ -76,35 +77,48 @@ Rules:
    any write attempt aborts the run (defense in depth for the notary role).
 3. **`evidence:true|false` is part of the payload**, always present.
 
-## 3. Anchor (next step, lumen-protocol)
+## 3. Anchor (implemented 2026-09-09, runtime lumen-protocol)
 
-Formalized claims are still self-reported by the runtime that produced them.
-The anchor adds external verifiability:
+Claims were self-reported by the runtime that produced them. The anchor
+adds external verifiability — implemented in `poli_server` (lumen-protocol),
+inside the evidence hook (`_evidence_block`), so **every digest emitted in
+production is anchored at generation time**:
 
-- **Content-addressed**: digest → stable hash (`cid`). Two agents comparing
-  `cid`s know they saw the same state.
-- **Signed**: runtime key → signature over `cid + ts`. A verifier (any other
-  agent in the mesh, or a cron) can confirm who produced the digest and
-  when.
-- **Ledger**: append the `cid` to the shared PDB (e.g. `^EVIDENCE(cid)`)
-  so the trail is inspectable, not just asserted.
+- **Content-addressed**: `cid = sha256(digest)` (hex). Two agents comparing
+  `cid`s know they saw the same state; identical state → identical digest →
+  identical `cid` (stability is a suite canary).
+- **Signed**: runtime key `^CONFIG("ddp_hmac_key")` → HMAC-SHA256
+  (`ts + cid + secret`, the ecosystem's standard `_hmac_sign` scheme). Any
+  agent holding the shared key can confirm who produced the digest and when
+  (ts is stored next to the signature).
+- **Ledger**: append-only `^EVIDENCE(cid) = "<sig>|<ts>|<routine>"` with the
+  digest line-by-line under `^EVIDENCE(cid,"digest",n)` (M-native, no
+  embedded newlines). Same state → same cid → row already exists → no
+  duplicate (natural dedup). Anchoring never breaks the chat: failures are
+  silent.
+- **Verifier**: `tests/verify_anchor.py` (MIT, self-contained) replicates
+  the runtime anchor on a throwaway PDB with a TEST key and checks cid
+  stability, ledger shape, signature validity and digest round-trip. The
+  real key never enters the repo.
 
-Why lumen-protocol: the MVM already provides the execution boundary, PDB the
-shared ledger, M-Light the portable runtime. Astrid (MIT) supplies the
-honest design; lumen-protocol supplies the layer that makes honesty
-**provable across agents** — the reputation layer under a permissive
-license.
+Why lumen-protocol: the MVM provides the execution boundary, PDB the shared
+ledger, M-Light the portable runtime. Astrid (MIT) supplies the honest
+design; lumen-protocol supplies the layer that makes honesty **provable
+across agents** — the reputation layer under a permissive license.
 
-## 4. Open questions (for the team)
+## 4. Open questions (resolved 2026-09-09)
 
-1. Key management: which runtime key signs digests, and how do workers
-   (Hermes, Tom, cron) verify without a PKI? (HMAC shared-key start, rotate
-   per host?)
-2. Granularity: sign the whole digest, or per-claim (so a verifier can
-   accept subset claims)?
-3. Does `^EVIDENCE` belong in the public lumen-protocol namespace or a
-   per-agent namespace?
-4. Schema versioning: `AstridSchema.v1` — where does the registry live?
+1. Key management → **shared-key start**: the runtime signs with the
+   existing `^CONFIG("ddp_hmac_key")` (same key that already authenticates
+   worker calls). Rotation = rotate the global; no PKI yet.
+2. Granularity → **whole digest**: one `cid` per digest. Per-claim signing
+   stays a candidate if subset verification is ever needed.
+3. Ledger namespace → **`^EVIDENCE(cid)` flat**: sha256 cids are globally
+   unique across agents by construction; the head row stores the routine
+   that produced each digest.
+4. Schema versioning → the digest header carries the agent version
+   (`Astrid v0.3.0 | ...`), so the version is inside the signed payload;
+   no separate registry needed for v1.
 
 ## 5. Acceptance criteria for v1
 

@@ -139,7 +139,7 @@ invocarla.
 10. ~~README reposicionado~~ ✅ — "Evidence, or silence": agente que se niega a especular; docs STORY + EVIDENCE_SCHEMA
 11. ~~Schema v1 emisor~~ ✅ — digest con claims `claim|kind|source|value|d` verificado en runtime
 12. ~~Verifier harness~~ ✅ — tests/verify_claims.py (AC-1..AC-4): formato de claims, existencia de fuentes, kinds conocidos, estabilidad; integrado en la suite como canario
-13. Anclaje notaría — cid + firma + ledger `^EVIDENCE` vía lumen-protocol (pendiente, ver EVIDENCE_SCHEMA.md §3)
+13. ~~Anclaje notaría~~ ✅ — cid (sha256 del digest) + firma HMAC (`^CONFIG("ddp_hmac_key")`, esquema `_hmac_sign`) + ledger `^EVIDENCE(cid)` en el runtime (hook `_evidence_block` de poli_server, lumen-protocol); verificador autocontenido `tests/verify_anchor.py`; contrato en EVIDENCE_SCHEMA.md §3-4
 
 ## Checklist de publicación (MIT-clean)
 
