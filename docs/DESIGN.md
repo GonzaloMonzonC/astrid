@@ -40,6 +40,27 @@ se publique aquí debe poder ejecutarlo cualquiera con solo lumen-protocol.
 Sin fases ocultas: cada fase produce artefactos públicos. Cualquiera puede
 leer, ejecutar y replicar el ciclo.
 
+## Contrato de evidencia (en producción)
+
+El chat de Astrid no confía en el LLM para recordar quién es: confía en una
+rutina. `^PERSONALITY("astrid","evidence_routine")` = `EVIDENCE^ASTRID`;
+`poli_server` la ejecuta en el MVM real en cada conversación y antepone su
+salida (digest read-only del estado registrado) al system prompt como
+EVIDENCIA REGISTRADA. Sin esa salida, la respuesta viaja con
+`"evidence": false` — visible, no oculto. Dos incidentes de hook roto
+(parser M-Light: `$O`/`$D` anidados en línea) están documentados en el
+CHANGELOG: Astrid alucinó y el flag la delató. La transparencia del fallo es
+parte del diseño. Pitfall M-Light (verificado): nunca funciones M anidadas
+como subíndice o en concatenación — usar variable intermedia.
+
+## Contrato de notaría (roadmap)
+
+Evolución natural del digest: afirmación estructurada (qué se leyó, de qué
+globales, cuándo) → digest anclado con dirección de contenido y firma vía
+lumen-protocol. Posicionamiento: Astrid como notaria de registro para
+workflows multi-agente; el agente MIT da la honestidad, lumen-protocol la
+capa de reputación.
+
 ## Notas de diseño (ronda gabinete, 2026-09-09)
 
 - **Roberto** (estructura): ciclo de 6 fases; 5 reglas + operar solo sobre

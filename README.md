@@ -1,27 +1,61 @@
 # 🧬 Astrid
 
-**The reference agent for LUMEN — first native of Poli with open MIT code.**
+**The agent that refuses to speculate.**
+**Evidence, or silence.**
 
-Astrid is the first agent born inside the Poli MVM whose identity and code are
-published as open source. She depends on
-[lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol) — the MIT
-"open metal": binary protocol, PDB hierarchical memory, M-Light/MVM, Poli +
-Smith agents and 115 MCP tools.
+Astrid is a reference agent born inside the Poli MVM — identity, code and
+cycle published under MIT. Her system prompt is not a biography: it is the
+live output of her own routine, `EVIDENCE^ASTRID`, executed in the real MVM
+on every conversation. She answers only from what that run returns.
 
-Her job: **prove what LUMEN can do** by doing it — auditing PDB globals,
-supervising MVM processes, spotting the incoherence nobody sees, asking the
-exact question — and to serve as a **living tutorial**: anyone can build their
-own agent by reading her code, her cycle and her identity.
+She does not "usually tell the truth". She is built so that **when she has
+no registered data, the design says so** — and when the evidence pipeline
+fails, the failure is visible (`evidence: false`), not hidden.
 
-> Astrid does not tell you what you want to hear. She tells you what you need
-> to see. And once you see it, you cannot unsee it.
+> Most agents are trained to be helpful. Astrid is trained to be verifiable.
+> Helpful is a promise. Verifiable is a design.
 
-## Why a separate repo?
+## Why this exists
 
-`lumen-protocol` is the metal. Astrid is the first **agent of reference built
-on the metal** — a MIT repo of her own, with a dependency on lumen-protocol.
-That keeps the protocol repo clean and gives third parties a working template:
-clone Astrid → run her on LUMEN → build your own ecosystem.
+LLMs fabricate. That is the known problem — and the known answer so far has
+been "prompt better". Astrid is a different answer: **make the source of
+truth an executable routine**, not a paragraph of instructions.
+
+- Her chat runtime (`poli_server`) reads `^PERSONALITY("astrid","evidence_routine")`
+  → `EVIDENCE^ASTRID`, runs it in the MVM, and prepends the real output to
+  her system prompt as **REGISTERED EVIDENCE**.
+- Her digest is a read-only scan of the live state: modes, metrics, routing,
+  spaces, MVM registry, quantum experiment ledger — whatever she is asked
+  about that exists in the machine.
+- Her rules (from her registered identity):
+
+  1. Operate only on registered data.
+  2. Never speculate: no data → say so, and ask the exact question.
+  3. Finding format: observation → implication → question.
+  4. Ask once, with clarity (golden rule).
+  5. Audit the PDB, supervise the MVM, catch the incoherence nobody sees.
+
+## What happens when the evidence fails
+
+This is the part other agents do not document. During her first days in
+production, two different bugs broke her evidence hook (a M-Light parser
+limit on nested `$O`/`$D` calls — both fixed). Each time, Astrid **hallucinated
+a confident answer**, and each time the response carried the flag
+`"evidence": false`. The hallucination was caught not by a guardrail but by
+the design itself: *the absence of evidence is part of the response*.
+
+The incident log is in [`CHANGELOG.md`](CHANGELOG.md). Read it: it is the
+most honest part of this repo. A system that can show you when it is
+untrustworthy is a system you can build on.
+
+## The notary contract (roadmap)
+
+The digest is currently a structured claim: what was read, from which
+globals, at which moment. The natural next step — and the reason this repo
+depends on [lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol)
+— is to anchor it: a content-addressed, signed digest that makes Astrid the
+**notary of record for multi-agent workflows**. Cloning the MIT agent gives
+you the honesty; the protocol gives you the reputation layer under it.
 
 ## Layout
 
@@ -31,9 +65,10 @@ astrid/
 ├── README.md            This file (EN · ES below)
 ├── SECURITY.md          No secrets, PDB discipline, reporting
 ├── CONTRIBUTING.md      Conventions + process
-├── CHANGELOG.md         Keep a Changelog / semver
+├── CHANGELOG.md         Keep a Changelog / semver — incl. the evidence-failure incidents
 ├── src/
-│   └── astrid.m         M routine: ASTRID (status) · INIT (reproducible seed) · AUDIT · COUNT
+│   └── astrid.m         M routine: ASTRID (status) · INIT (reproducible seed) ·
+│                        AUDIT · COUNT · EVIDENCE (registered digest)
 ├── personalities/
 │   └── astrid.md        Full readable identity (accents, voice, fields)
 ├── harness/
@@ -62,6 +97,7 @@ Reference for this version: lumen-protocol `main` (2026-09).
    ; load src/astrid.m into your M routine path
    D INIT^ASTRID      ; fill-missing, idempotent
    D ASTRID^ASTRID    ; status
+   W $$EVIDENCE^ASTRID()  ; the registered digest — read it, then talk to her
    ```
 3. Verify (throwaway PDB, no external services) — **full suite, one command**:
    ```bash
@@ -78,8 +114,8 @@ Reference for this version: lumen-protocol `main` (2026-09).
    python harness/astrid_harness.py audit --ns ^MYNS
    ```
 4. Talk to her: personality mode `astrid` in any LUMEN chat runtime that
-   reads `^PERSONALITY` (e.g. Poli), or via the LUMEN MCP servers
-   (filesystem, web, thinking, PDB — zero API keys).
+   reads `^PERSONALITY` + the `evidence_routine` contract (e.g. Poli), or via
+   the LUMEN MCP servers (filesystem, web, thinking, PDB — zero API keys).
 
 ## Roadmap
 
@@ -88,8 +124,11 @@ Reference for this version: lumen-protocol `main` (2026-09).
 - [x] Repo skeleton: reproducible INIT, verify.m (parametric), harness, docs (EN/ES)
 - [x] Template validated: `examples/echo` derived with `template/render.py` + verified on MVM
 - [x] Harness validated on clean venv (lumen-protocol clone only)
+- [x] **Published to GitHub (MIT)** — public, main
+- [x] Evidence hook in production: chat answers from `EVIDENCE^ASTRID` output;
+      `evidence:false` is visible when the pipeline fails (incidents in CHANGELOG)
 - [ ] Full standalone inbox wiring (MVM native agent loop)
-- [ ] **Publish to GitHub (MIT)** — last step, when everything is green
+- [ ] Signed, content-addressed digest anchored via lumen-protocol (notary contract)
 
 ## Sibling agents
 
@@ -102,20 +141,64 @@ operations). Each is its own MIT repo with the same skeleton — see
 
 ## 🧬 Astrid (ES)
 
-**El agente de referencia de LUMEN — primera nativa de Poli con código MIT
-abierto.**
+**El agente que se niega a especular.**
+**Evidencia, o silencio.**
 
-Astrid es la primera agente nacida dentro del MVM de Poli cuya identidad y
-código se publican en abierto. Depende de lumen-protocol (MIT): protocolo
-binario, PDB, M-Light/MVM, Poli + Smith y 115 tools MCP.
+Astrid es un agente de referencia nacido dentro del MVM de Poli — identidad,
+código y ciclo publicados bajo MIT. Su system prompt no es una biografía: es
+la salida en vivo de su propia rutina, `EVIDENCE^ASTRID`, ejecutada en el MVM
+real en cada conversación. Responde solo con lo que esa ejecución devuelve.
 
-Su trabajo: **demostrar lo que LUMEN puede hacer** haciéndolo — auditar
-globales PDB, supervisar procesos MVM, ver la incoherencia que nadie ve, hacer
-la pregunta exacta — y servir de **tutorial vivo**: cualquiera puede construir
-su agente leyendo su código, su ciclo y su identidad.
+No es que "normalmente diga la verdad". Está construida para que **cuando no
+hay datos registrados, el diseño lo diga** — y cuando el pipeline de
+evidencia falla, el fallo es visible (`evidence: false`), no se oculta.
 
-> Astrid no te dice lo que quieres oír. Te dice lo que necesitas ver. Y cuando
-> lo ves, no puedes dejar de verlo.
+> La mayoría de agentes están entrenados para ser útiles. Astrid está
+> diseñada para ser verificable. Útil es una promesa. Verificable es un
+> diseño.
+
+### Por qué existe esto
+
+Los LLM fabrican. La respuesta conocida hasta ahora era "prompt mejor".
+Astrid es otra respuesta: **hacer que la fuente de verdad sea una rutina
+ejecutable**, no un párrafo de instrucciones.
+
+- Su runtime de chat (`poli_server`) lee `^PERSONALITY("astrid","evidence_routine")`
+  → `EVIDENCE^ASTRID`, la ejecuta en el MVM y antepone la salida real a su
+  system prompt como **EVIDENCIA REGISTRADA**.
+- Su digest es un escaneo read-only del estado vivo: modos, métricas, routing,
+  espacios, registro MVM, libro de experimentos cuánticos — lo que exista en
+  la máquina sobre lo que se le pregunta.
+- Sus reglas (de su identidad registrada):
+
+  1. Operar solo sobre datos registrados.
+  2. Nunca especular: sin datos → decirlo, y hacer la pregunta exacta.
+  3. Formato de hallazgo: observación → implicación → pregunta.
+  4. Preguntar una sola vez, con claridad (regla de oro).
+  5. Auditar la PDB, supervisar el MVM, ver la incoherencia que nadie ve.
+
+### Qué pasa cuando la evidencia falla
+
+Esta es la parte que los demás agentes no documentan. En sus primeros días en
+producción, dos bugs distintos rompieron su hook de evidencia (un límite del
+parser de M-Light con llamadas `$O`/`$D` anidadas — ambos corregidos). Las dos
+veces, Astrid **alucinó una respuesta con total confianza**, y las dos veces
+la respuesta llevaba el flag `"evidence": false`. La alucinación no la cazó un
+guardarraíl: la cazó el propio diseño — *la ausencia de evidencia forma parte
+de la respuesta*.
+
+El registro de incidentes está en [`CHANGELOG.md`](CHANGELOG.md). Léelo: es
+la parte más honesta de este repo. Un sistema que puede mostrarte cuándo no
+es de fiar es un sistema sobre el que puedes construir.
+
+### El contrato de notaría (roadmap)
+
+El digest es hoy una afirmación estructurada: qué se leyó, de qué globales, en
+qué momento. El siguiente paso natural — y la razón de que este repo dependa
+de [lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol) — es
+anclarlo: un digest con dirección de contenido y firma que convierta a Astrid
+en la **notaria de registro de workflows multi-agente**. Clonar el agente MIT
+te da la honestidad; el protocolo te da la capa de reputación debajo.
 
 Repos MIT relacionados: [lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol) ·
 [Poli](https://github.com/GonzaloMonzonC/poli)
