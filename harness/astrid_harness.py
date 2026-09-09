@@ -5,9 +5,14 @@ Three modes (run what you have):
 
   1. STATUS   — run ASTRID^ASTRID against any lumen-m-light MVM (needs the DLL
                 or the published lumen-mcp package). Prints identity status.
-  2. AUDIT    — demo audit: count first-level nodes of a namespace in the PDB
+  2. SEED     — INIT^ASTRID on the throwaway PDB (fills only missing; use
+                --force to overwrite). Identity + evidence_routine contract.
+  3. EVIDENCE — run the registered digest: $$EVIDENCE^ASTRID() after an
+                implicit seed. This is the canary of the evidence hook.
+  4. VERIFY   — run VERIFY^VERIFY for an agent name (default astrid).
+  5. AUDIT    — demo audit: count first-level nodes of a namespace in the PDB
                 (same M routine used in src/astrid.m).
-  3. CHAT     — (optional) point HOST_MCP to any LUMEN MCP server that exposes
+  6. CHAT     — (optional) point HOST_MCP to any LUMEN MCP server that exposes
                 a chat personality mode (e.g. Poli's mode=astrid); not needed
                 for a standalone install.
 
@@ -21,7 +26,11 @@ only — it does NOT include the MVM. A clone build or DLL is required to run
 routines.
 
 Usage:
-    python astrid_harness.py status
+    python astrid_harness.py status              # state of the personality
+    python astrid_harness.py seed                # INIT^ASTRID (idempotent)
+    python astrid_harness.py seed --force        # overwrite/reset
+    python astrid_harness.py evidence            # registered digest (claims)
+    python astrid_harness.py verify --name astrid
     python astrid_harness.py audit --ns ^ANGI
     ASTRID_LIB=C:/path/to/lumen_mlight.dll python astrid_harness.py status
 """
@@ -32,7 +41,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SRC_ROUTINES = {"ASTRID": (ROOT / "src" / "astrid.m").read_text(encoding="utf-8")}
+SRC_ROUTINES = {
+    "ASTRID": (ROOT / "src" / "astrid.m").read_text(encoding="utf-8"),
+    "VERIFY": (ROOT / "tests" / "verify.m").read_text(encoding="utf-8"),
+}
 
 
 def _mvm() -> object:
@@ -67,14 +79,24 @@ def _run(execute, src: str, db: str):
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("mode", choices=["status", "audit"])
+    ap.add_argument("mode", choices=["status", "seed", "evidence", "verify", "audit"])
     ap.add_argument("--ns", default="^ANGI", help="namespace to audit (audit mode)")
+    ap.add_argument("--name", default="astrid", help="agent to verify (verify mode)")
+    ap.add_argument("--force", action="store_true", help="seed: overwrite/reset (INIT(1))")
     ap.add_argument("--db", default=os.path.join(os.environ.get("TEMP", "."), "astrid_pdb.db"))
     args = ap.parse_args()
 
     execute = _mvm()
     if args.mode == "status":
         _run(execute, "D ASTRID^ASTRID", args.db)
+    elif args.mode == "seed":
+        _run(execute, "D INIT^ASTRID(" + ("1" if args.force else "0") + ")", args.db)
+    elif args.mode == "evidence":
+        _run(execute, "D INIT^ASTRID", args.db)
+        _run(execute, "W $$EVIDENCE^ASTRID()", args.db)
+    elif args.mode == "verify":
+        _run(execute, "D INIT^ASTRID", args.db)
+        _run(execute, f'D VERIFY^VERIFY("{args.name}")', args.db)
     elif args.mode == "audit":
         src = f'S ^ASTRID("audit_ns")="{args.ns}" D AUDIT^ASTRID'
         _run(execute, src, args.db)

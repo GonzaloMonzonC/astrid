@@ -10,10 +10,14 @@ Checks:
   2. ASTRID status: active, identity_len, 7 capabilities, 6 rules
   3. VERIFY PASS (astrid) and FAIL for an unknown agent
   4. AUDIT demo runs (read-only)
-  5. Identity sync: src/astrid.m identity line == personalities/astrid.md
+  5. EVIDENCE canary: the digest runs, header says evidence=true, every
+     claim| line has a source and exactly 5 fields (schema v1)
+  6. evidence_routine contract seeded: ^PERSONALITY("astrid","evidence_routine")
+     == "EVIDENCE^ASTRID" after INIT
+  7. Identity sync: src/astrid.m identity line == personalities/astrid.md
      ASCII block; pure ASCII; 600–1400 chars
-  6. Template regression: render a scratch agent → INIT → VERIFY PASS
-  7. examples/echo regression: INIT → VERIFY PASS
+  8. Template regression: render a scratch agent → INIT → VERIFY PASS
+  9. examples/echo regression: INIT → VERIFY PASS
 
 Usage:  python tests/run_tests.py          (exit 0 = all green)
 """
@@ -95,12 +99,22 @@ def main() -> int:
     # 4. AUDIT demo (read-only)
     out = run('D AUDIT^ASTRID')
     check("AUDIT demo", "[ASTRID] observacion" in out, out[:120])
-    # 5. Identity sync (M ↔ MD), ASCII, longitud
+    # 5. EVIDENCE canary (schema v1: header + claims con source)
+    out = run('W $$EVIDENCE^ASTRID()')
+    check("EVIDENCE header evidence=true", "evidence=true" in out, out[:120])
+    claims = [ln for ln in out.splitlines() if ln.startswith("claim|")]
+    check("EVIDENCE emite claims", len(claims) >= 15, f"{len(claims)} claims")
+    bad = [ln for ln in claims if len(ln.split("|")) != 5 or not ln.split("|")[2]]
+    check("claims formato+source", not bad, (bad[0][:100] if bad else ""))
+    # 6. evidence_routine contract seeded by INIT
+    out = run('W $G(^PERSONALITY("astrid","evidence_routine"))')
+    check("evidence_routine sembrado", "EVIDENCE^ASTRID" in out, out[:120])
+    # 7. Identity sync (M ↔ MD), ASCII, longitud
     im, imd = identity_from_m(), identity_from_md()
     check("identity M == MD", im == imd, f"M len={len(im)} MD len={len(imd)}")
     check("identity ASCII", bool(im) and all(ord(c) < 128 for c in im), "no-ASCII")
     check("identity 600-1400", 600 <= len(im) <= 1400, f"len={len(im)}")
-    # 6. Template regression: scratch agent
+    # 8. Template regression: scratch agent
     with tempfile.TemporaryDirectory() as td:
         tdp = Path(td)
         idf = tdp / "id.txt"
@@ -114,7 +128,7 @@ def main() -> int:
         run('D INIT^PROBE')
         out = run('D VERIFY^VERIFY("probe")')
         check("template render + INIT + VERIFY", "PASS probe" in out, out[:120])
-    # 7. examples/echo regression
+    # 9. examples/echo regression
     run('D INIT^ECHO')
     out = run('D VERIFY^VERIFY("echo")')
     check("echo (derivado real) VERIFY", "PASS echo" in out, out[:120])

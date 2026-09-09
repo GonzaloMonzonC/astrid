@@ -34,7 +34,7 @@ solicita confirmación al operador.
 | provider / model | deepseek / deepseek-v4-flash |
 | temperature | 0.3 |
 | status / is_active | registrado / 1 |
-| creator / version | poli / 0.1.0 |
+| creator / version | poli / 0.2.0 |
 
 ## core_mission
 

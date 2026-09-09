@@ -45,7 +45,8 @@ SEED ; canonical seed (SETIF only writes missing fields)
        D SETIF^ASTRID("model","deepseek-v4-flash")
        D SETIF^ASTRID("temperature","0.3")
        D SETIF^ASTRID("creator","poli")
-       D SETIF^ASTRID("version","0.1.0")
+       D SETIF^ASTRID("version","0.2.0")
+       D SETIF^ASTRID("evidence_routine","EVIDENCE^ASTRID")
        D LISTS^ASTRID
        Q
 
@@ -127,7 +128,6 @@ COUNT(ns) ; count subnodes under ^PERSONALITY("astrid",ns,*) — M-Light compati
        S d=$D(^QUANTUM("job")) S ev=ev_$C(10)_"claim|counter|^QUANTUM(job)|"_nj_"|"_d
        S uk=$O(^QUANTUM("colapso",""),-1)
        S d=$D(^QUANTUM("colapso",uk)) S ev=ev_$C(10)_"claim|entry|^QUANTUM(colapso,ultimo)|idx="_uk_" raw="_$E($G(^QUANTUM("colapso",uk)),1,110)_"|"_d
-       S d=$D(^QUANTUM("ultimo")) S ev=ev_$C(10)_"claim|state|^QUANTUM(ultimo,stats)|POBLADAS auditoria 2026-09-09 (115 integros, 19 tipos)|"_d
        S d=$D(^SESSION)
        I d=0 S ev=ev_$C(10)_"claim|state|^SESSION|sin overrides de modo por sesion|0"
        E  S ev=ev_$C(10)_"claim|state|^SESSION|overrides de modo presentes|"_d
