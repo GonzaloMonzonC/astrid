@@ -88,7 +88,8 @@ def main() -> int:
     run('D INIT^ASTRID(1)')
     out = run('D ASTRID^ASTRID')
     check("INIT+status activo", "active=1" in out, out[:120])
-    check("identity_len 646", "identity_len=646" in out, out[:120])
+    exp_len = str(len(identity_from_m()))
+    check(f"identity_len {exp_len}", f"identity_len={exp_len}" in out, out[:120])
     check("7 capabilities / 6 rules", "capabilities=7 rules=6" in out, out[:120])
     check("provider/model", "deepseek-v4-flash" in out, out[:120])
     # 3. VERIFY PASS astrid + FAIL desconocido
@@ -106,6 +107,9 @@ def main() -> int:
     check("EVIDENCE emite claims", len(claims) >= 15, f"{len(claims)} claims")
     bad = [ln for ln in claims if len(ln.split("|")) != 5 or not ln.split("|")[2]]
     check("claims formato+source", not bad, (bad[0][:100] if bad else ""))
+    # estabilidad: mismo estado -> mismo digest (AC-3 base)
+    out2 = run('W $$EVIDENCE^ASTRID()')
+    check("digest estable ante estado identico", out == out2, "los digests difieren")
     # 6. evidence_routine contract seeded by INIT
     out = run('W $G(^PERSONALITY("astrid","evidence_routine"))')
     check("evidence_routine sembrado", "EVIDENCE^ASTRID" in out, out[:120])

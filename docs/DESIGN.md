@@ -121,7 +121,7 @@ auditor profile in this priority order: PDB (memory/evidence) → thinking
 ## Roadmap
 
 1. ~~Identity card (cabinet round)~~ ✅
-2. ~~^PERSONALITY registration~~ ✅  (identity_len=646, active=1)
+2. ~~^PERSONALITY registration~~ ✅  (identity_len=631 after the 2026-09-09 review, active=1)
 3. ~~Repo skeleton~~ ✅  (reproducible INIT + verify.m + harness, verified on local MVM)
 4. ~~Technical review (roberto/pamies, smith_5)~~ ✅ — MIT-clean checklist in this doc
 5. `astrid init` — bootstrap: identity + MVM spawn + ^AGENTES registration (already registered in the Cadences runtime; standalone version pending)
@@ -131,7 +131,7 @@ auditor profile in this priority order: PDB (memory/evidence) → thinking
 9. ~~Evidence hook in production~~ ✅ — chat responds only from `EVIDENCE^ASTRID`; `evidence:false` visible (incidents in CHANGELOG)
 10. ~~README repositioned~~ ✅ — "Evidence, or silence": an agent that refuses to speculate; STORY + EVIDENCE_SCHEMA docs
 11. ~~Schema v1 emitter~~ ✅ — digest with claims `claim|kind|source|value|d`, verified in runtime
-12. Verifier harness — claim format, source existence against a PDB snapshot, stability (pending)
+12. ~~Verifier harness~~ ✅ — tests/verify_claims.py (AC-1..AC-4): claim format, source existence, known kinds, stability; wired into the suite as a canary
 13. Notary anchoring — cid + signature + `^EVIDENCE` ledger via lumen-protocol (pending, see EVIDENCE_SCHEMA.md §3)
 
 ## Publication checklist (MIT-clean)

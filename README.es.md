@@ -145,8 +145,8 @@ necesita el fix de M-Light del commit `243e74c` o posterior).
       `evidence:false` visible (incidentes en CHANGELOG)
 - [x] Emisor de schema v1 — digest como afirmaciones parseables (listo para verificador)
 - [x] Canario de evidencia en la suite de tests (16 checks)
-- [ ] Harness verificador — formato de claim, existencia de la fuente contra
-      snapshot de la PDB, estabilidad (AC-2..AC-4 en `docs/EVIDENCE_SCHEMA.es.md`)
+- [x] Harness verificador — `tests/verify_claims.py` (AC-1..AC-4): formato de
+      claims, fuentes, kinds conocidos, estabilidad ante estados idénticos
 - [ ] Anclaje de notaría — digest firmado con dirección de contenido (cid +
       firma + libro `^EVIDENCE`) vía lumen-protocol
 - [ ] Cableado completo de inbox standalone (bucle de agente nativo del MVM)

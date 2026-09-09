@@ -140,8 +140,8 @@ M-Light fix of commit `243e74c` or later).
       `evidence:false` visible (incidents in CHANGELOG)
 - [x] Schema v1 emitter — digest as parseable claims (verifier-ready)
 - [x] Evidence canary in the test suite (16 checks)
-- [ ] Verifier harness — claim format, source existence vs PDB snapshot,
-      stability (AC-2..AC-4 in `docs/EVIDENCE_SCHEMA.md`)
+- [x] Verifier harness — `tests/verify_claims.py` (AC-1..AC-4): claim
+      format, sources, known kinds, stability across identical states
 - [ ] Notary anchor — content-addressed signed digest (cid + signature +
       `^EVIDENCE` ledger) via lumen-protocol
 - [ ] Full standalone inbox wiring (MVM native agent loop)

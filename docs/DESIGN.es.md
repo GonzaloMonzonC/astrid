@@ -75,6 +75,11 @@ honestidad, lumen-protocol la capa de reputación.
   review de personalidad a agentes nuevos; empatía estructurada; formato de
   hallazgo observación → implicación → pregunta; regla de oro: pregunta una
   sola vez, con claridad.
+- **Decisión 2026-09-09 (revisión del equipo)**: el descriptor clínico
+  "autismo-coded" se eliminó del identity público (etiqueta de
+  neurodivergencia usada como adorno en un repo MIT abierto). La voz
+  observable ya está descrita en "Voz" (literal, formato de hallazgo,
+  empatía estructurada). Queda registrada aquí como nota interna.
 - **Pendiente**: faceta de implementación a revisar con Porto (harness,
   esqueleto fino del repo, provider/model definitivo).
 
@@ -123,7 +128,7 @@ invocarla.
 ## Roadmap
 
 1. ~~Tarjeta de identidad (ronda gabinete)~~ ✅
-2. ~~Registro ^PERSONALITY~~ ✅  (identity_len=646, active=1)
+2. ~~Registro ^PERSONALITY~~ ✅  (identity_len=631 tras la revisión 2026-09-09, active=1)
 3. ~~Esqueleto repo~~ ✅  (INIT reproducible + verify.m + harness, verificado en MVM local)
 4. ~~Revisión técnica (roberto/pamies, smith_5)~~ ✅ — checklist MIT-clean en este doc
 5. `astrid init` — bootstrap: identity + spawn MVM + registro ^AGENTES (ya registrada en runtime Cadences; pendiente versión standalone)
@@ -133,7 +138,7 @@ invocarla.
 9. ~~Evidence hook en producción~~ ✅ — chat responde solo de `EVIDENCE^ASTRID`; `evidence:false` visible (incidentes en CHANGELOG)
 10. ~~README reposicionado~~ ✅ — "Evidence, or silence": agente que se niega a especular; docs STORY + EVIDENCE_SCHEMA
 11. ~~Schema v1 emisor~~ ✅ — digest con claims `claim|kind|source|value|d` verificado en runtime
-12. Verifier harness — formato de claims, existencia de fuentes contra snapshot PDB, estabilidad (pendiente)
+12. ~~Verifier harness~~ ✅ — tests/verify_claims.py (AC-1..AC-4): formato de claims, existencia de fuentes, kinds conocidos, estabilidad; integrado en la suite como canario
 13. Anclaje notaría — cid + firma + ledger `^EVIDENCE` vía lumen-protocol (pendiente, ver EVIDENCE_SCHEMA.md §3)
 
 ## Checklist de publicación (MIT-clean)
