@@ -96,7 +96,9 @@ EVIDENCE ; digest de estado REGISTRADO (read-only) para el system prompt del cha
        ; QUIT devuelve string ASCII con hechos verificados en el MVM real.
        ; Contrato con poli_server (evidence_routine): el LLM del chat recibe
        ; esta salida como UNICA fuente de datos — no debe inventar fuera de ella.
-       N ev,mode,n,k,vo,al,lw,ag
+       ; Secciones: estado, ^ANGI, ^SPACE (bindings de datos), ^MVM (capa de
+       ; virtualizacion de agentes M-native), routing.
+       N ev,mode,n,k,vo,al,lw,ag,s,a
        S mode=$G(^ACTIVE,"creative")
        S n=0
        S k=$O(^ANGI(""))
@@ -113,6 +115,20 @@ EVIDENCE ; digest de estado REGISTRADO (read-only) para el system prompt del cha
        S ev=ev_$C(10)_"^ANGI(metrics,alerts_last_run) raw="_$E(al,1,80)
        S ev=ev_$C(10)_"^ANGI(metrics,last_watchdog) raw="_$E(lw,1,80)
        S ev=ev_$C(10)_"^AGENTES(routing,astrid)="_ag
+       S s=$O(^SPACE(""))
+       I s="" S ev=ev_$C(10)_"^SPACE: vacio (ningun espacio de datos bindeado)"
+       F  Q:s=""  D
+       . S ev=ev_$C(10)_"^SPACE("_s_") -> "_$G(^SPACE(s,"host"))_":"_$G(^SPACE(s,"port"))
+       . S s=$O(^SPACE(s))
+       S ev=ev_$C(10)_"^MVM(router): status="_$G(^MVM("router","status"))_" v="_$G(^MVM("router","version"))_" agents="_$G(^MVM("router","agents_count"))_" provider="_$G(^MVM("router","provider"))
+       S ev=ev_$C(10)_"^MVM(api): v="_$G(^MVM("api","version"))_" agent_count="_$G(^MVM("api","agent_count"))_" agents_count="_$G(^MVM("api","agents_count"))
+       S n=0
+       S a=$O(^MVM("agents",""))
+       F  Q:a=""  D
+       . S n=n+1
+       . S a=$O(^MVM("agents",a))
+       S ev=ev_$C(10)_"^MVM(agents): "_n_" clave(s) registradas"
+       S ev=ev_$C(10)_"^VIRTUAL y ^BIND: no existen en este runtime (la virtualizacion vive en ^MVM y los binds en ^SPACE)"
        S ev=ev_$C(10)_"REGLA: responde SOLO con estos datos registrados; si la pregunta necesita algo fuera de ellos, dilo y sugiere ejecutar la rutina adecuada."
        Q ev
 
