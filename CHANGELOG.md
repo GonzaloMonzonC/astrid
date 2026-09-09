@@ -4,7 +4,36 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the repo uses semantic
 versioning.
 
-## [0.1.1] — 2026-09-09 (production fix, not published)
+## [0.2.0] — 2026-09-09 (published on GitHub, main)
+
+### Added
+- Repo publicado: https://github.com/GonzaloMonzonC/astrid (public, MIT).
+- README reposicionado — **"Evidence, or silence"**: el agente que se niega a
+  especular. System prompt = salida en vivo de `EVIDENCE^ASTRID` ejecutada en
+  el MVM; sección "what happens when the evidence fails"; contrato de notaría
+  como roadmap hacia lumen-protocol. EN/ES.
+- `docs/STORY.md` — historia de lanzamiento (EN/ES): el caso real de la
+  auditoría cuántica, los incidentes de alucinación cazados por el diseño.
+- `docs/EVIDENCE_SCHEMA.md` — esquema del digest, contrato de notaría,
+  preguntas abiertas y criterios de aceptación.
+- Digest ampliado con ^SPACE (binds), ^MVM (router/api/agents) y ^QUANTUM
+  (colapso/job/último) — Astrid audita espacios de datos y virtualización.
+- **Schema v1 emisor**: `EVIDENCE^ASTRID` emite claims parseables
+  `claim|<kind>|<source>|<value>|<d>` (19 claims por digest, verificadas en
+  runtime sobre estado vivo). Ausencias verificadas como claims con d=0.
+
+### Fixed
+- `$O(...)` anidado como subíndice rompía EVIDENCE (límite parser M-Light):
+  digest vacío → chat sin evidencia → Astrid alucinó ramas cuánticas
+  inventadas (`QAL/ENT_CTRL/TELEP`). Fix: variable intermedia `uk`.
+  Verificado: `evidence:true` y auditoría real de ^QUANTUM.
+- `$D`/`$O` inline en concatenación rompía EVIDENCE (mismo límite): alucinó
+  veredicto con `fidelity`/`^NORM` inventados, delatado por `evidence:false`.
+  Fix: `$D` solo en SET RHS con variable intermedia; línea de estado a texto
+  plano. **Regla de construcción M-Light**: nunca funciones M anidadas como
+  subíndice o en concatenación — variable intermedia siempre.
+
+## [0.1.1] — 2026-09-09 (production fix)
 
 ### Fixed
 - `AUDIT^ASTRID` contaba 0 entradas en Poli real: usaba la forma de DOS

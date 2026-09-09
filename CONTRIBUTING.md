@@ -18,6 +18,13 @@ template for building agents on lumen-protocol.
 
 - M routines: M-Light compatible subset (no vendor extensions), labels in
   UPPERCASE, one entry point per concern, comments explain *why*.
+- **M-Light pitfall (verified)**: never nest M functions inline as a
+  subscript or inside a concatenation (`$O(^G("x",$O(...)))` or
+  `"_$D(^G(...))"` break the parser) — assign to an intermediate variable
+  first, then use the variable.
+- `EVIDENCE` claims follow the schema: `claim|<kind>|<source>|<value>|<d>`
+  (see `docs/EVIDENCE_SCHEMA.md`). No claim without a source; the routine is
+  read-only; the `evidence` flag is always part of the digest header.
 - Identity line: ASCII, one line, 600–1400 chars, no accents
   (`^PERSONALITY` storage constraint) — the human-readable version with
   accents lives in `personalities/astrid.md` and must stay in sync.

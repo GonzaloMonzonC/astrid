@@ -4,8 +4,8 @@
 
 Astrid es el **agente de referencia** de lumen-protocol: un repo MIT separado
 que depende del metal (lumen-protocol) y demuestra sus facultades en
-operación real. Es la primera nativa de Poli (vive en el MVM como roberto y
-javier) cuyo código y personalidad se publican en abierto.
+operación real. Es la primera nativa de Poli cuyo código y personalidad se
+publican en abierto.
 
 Capas:
 
@@ -53,13 +53,15 @@ CHANGELOG: Astrid alucinó y el flag la delató. La transparencia del fallo es
 parte del diseño. Pitfall M-Light (verificado): nunca funciones M anidadas
 como subíndice o en concatenación — usar variable intermedia.
 
-## Contrato de notaría (roadmap)
+## Contrato de notaría (schema v1 emitido; anclaje en roadmap)
 
-Evolución natural del digest: afirmación estructurada (qué se leyó, de qué
-globales, cuándo) → digest anclado con dirección de contenido y firma vía
-lumen-protocol. Posicionamiento: Astrid como notaria de registro para
-workflows multi-agente; el agente MIT da la honestidad, lumen-protocol la
-capa de reputación.
+El digest ya emite claims estructuradas (`claim|kind|source|value|d`) desde
+2026-09-09 — ver `docs/EVIDENCE_SCHEMA.md`. La afirmación estructurada (qué
+se leyó, de qué globales, con qué $D) es el cimiento. Pendiente: verifier
+harness (formato + existencia de fuentes + estabilidad) y el anclaje con
+dirección de contenido y firma vía lumen-protocol. Posicionamiento: Astrid
+como notaria de registro para workflows multi-agente; el agente MIT da la
+honestidad, lumen-protocol la capa de reputación.
 
 ## Notas de diseño (ronda gabinete, 2026-09-09)
 
@@ -123,7 +125,12 @@ invocarla.
 5. `astrid init` — bootstrap: identity + spawn MVM + registro ^AGENTES (ya registrada en runtime Cadences; pendiente versión standalone)
 6. Harness LUMEN fino + docs/BUILD_YOUR_OWN.md ✅ (validado en venv limpio 2026-09)
 7. ~~`template/` + agente derivado~~ ✅ — `examples/echo` generado con template/render.py y verificado (INIT + VERIFY PASS)
-8. Publicar GitHub (MIT) — SOLO cuando el checklist de publicación esté verde
+8. ~~Publicar GitHub (MIT)~~ ✅ — público en main (2026-09-09), checklist MIT-clean verde
+9. ~~Evidence hook en producción~~ ✅ — chat responde solo de `EVIDENCE^ASTRID`; `evidence:false` visible (incidentes en CHANGELOG)
+10. ~~README reposicionado~~ ✅ — "Evidence, or silence": agente que se niega a especular; docs STORY + EVIDENCE_SCHEMA
+11. ~~Schema v1 emisor~~ ✅ — digest con claims `claim|kind|source|value|d` verificado en runtime
+12. Verifier harness — formato de claims, existencia de fuentes contra snapshot PDB, estabilidad (pendiente)
+13. Anclaje notaría — cid + firma + ledger `^EVIDENCE` vía lumen-protocol (pendiente, ver EVIDENCE_SCHEMA.md §3)
 
 ## Checklist de publicación (MIT-clean)
 
