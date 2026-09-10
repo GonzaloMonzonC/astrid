@@ -19,7 +19,9 @@ fails, the failure is visible (`evidence: false`), not hidden.
 
 **Runs on [lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol)
 (MIT)** — protocol · PDB · M-Light/MVM · Poli+Smith · 115 MCP tools, no API
-keys. The agent repo is the door; the protocol is the house.
+keys. Its engine, the MVM: a single ~4 MB native library (Rust to machine
+code) — no interpreter to install. The agent repo is the door; the protocol is
+the house.
 
 > Part of the **tríada A·I·E**: Astrid *(is it true?)* · [Iris](https://github.com/GonzaloMonzonC/iris) *(what if…?)* · [Elena](https://github.com/GonzaloMonzonC/elena) *(what do we do — now?)* — three MIT agents, one protocol.
 

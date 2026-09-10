@@ -20,7 +20,9 @@ evidencia falla, el fallo es visible (`evidence: false`), no se oculta.
 
 **Corre sobre [lumen-protocol](https://github.com/GonzaloMonzonC/lumen-protocol)
 (MIT)** — protocolo · PDB · M-Light/MVM · Poli+Smith · 115 herramientas MCP,
-sin claves de API. El repo del agente es la puerta; el protocolo es la casa.
+sin claves de API. Su motor, el MVM: una única librería nativa de ~4 MB (Rust a
+código máquina) — sin intérprete que instalar. El repo del agente es la puerta;
+el protocolo es la casa.
 
 > Parte de la **tríada A·I·E**: Astrid *(¿es verdad?)* · [Iris](https://github.com/GonzaloMonzonC/iris) *(¿y si…?)* · [Elena](https://github.com/GonzaloMonzonC/elena) *(¿y ahora qué?)* — tres agentes MIT, un protocolo.
 
