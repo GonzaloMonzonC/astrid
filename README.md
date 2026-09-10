@@ -23,10 +23,10 @@ keys. The agent repo is the door; the protocol is the house.
 
 ## What her evidence looks like
 
-A real digest (18 claims per run in production; schema v1):
+A real digest (26 claims per run in production; schema v1):
 
 ```
-Astrid v0.2.0 | active=1 | mode activo=astrid | evidence=true
+Astrid v0.3.0 | active=1 | mode activo=astrid | evidence=true
 claim|mode|^ACTIVE|astrid|1
 claim|metric|^ANGI(metrics,agents_online)|{"value": 12, "updated": "..."}|1
 claim|route|^AGENTES(routing,astrid)|{"tipo": "poli", "mode": "astrid"}|1
@@ -125,7 +125,7 @@ M-Light fix of commit `243e74c` or later).
    python harness/astrid_harness.py seed
    python harness/astrid_harness.py evidence
    ```
-   Expected output starts with `Astrid v0.2.0 | active=1 | ... | evidence=true`
+   Expected output starts with `Astrid v0.3.0 | active=1 | ... | evidence=true`
    followed by `claim|...` lines (see the sample above).
 4. Full suite against a real MVM on a throwaway PDB — no external services,
    **20 checks** (INGEST inbox loop + MCP register):
@@ -152,8 +152,9 @@ M-Light fix of commit `243e74c` or later).
       format, sources, known kinds, stability across identical states
 - [x] Ingest demo — external events → PDB inbox → digest claims
       (`examples/ingest/ingest_demo.py`, 18-check suite)
-- [ ] Notary anchor — content-addressed signed digest (cid + signature +
-      `^EVIDENCE` ledger) via lumen-protocol
+- [x] Notary anchor (0.3.1) — content-addressed signed digest (cid + signature +
+      `^EVIDENCE` ledger) via lumen-protocol; verifier `tests/verify_anchor.py`,
+      runtime anchor in `poli_server._evidence_block`
 - [ ] Full standalone inbox wiring (MVM native agent loop)
 
 ## Sibling agents

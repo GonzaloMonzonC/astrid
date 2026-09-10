@@ -24,10 +24,10 @@ sin claves de API. El repo del agente es la puerta; el protocolo es la casa.
 
 ## Así se ve su evidencia
 
-Un digest real (18 afirmaciones por ejecución en producción; schema v1):
+Un digest real (26 afirmaciones por ejecución en producción; schema v1):
 
 ```
-Astrid v0.2.0 | active=1 | mode activo=astrid | evidence=true
+Astrid v0.3.0 | active=1 | mode activo=astrid | evidence=true
 claim|mode|^ACTIVE|astrid|1
 claim|metric|^ANGI(metrics,agents_online)|{"value": 12, "updated": "..."}|1
 claim|route|^AGENTES(routing,astrid)|{"tipo": "poli", "mode": "astrid"}|1
@@ -130,7 +130,7 @@ necesita el fix de M-Light del commit `243e74c` o posterior).
    python harness/astrid_harness.py seed
    python harness/astrid_harness.py evidence
    ```
-   La salida esperada empieza con `Astrid v0.2.0 | active=1 | ... | evidence=true`
+   La salida esperada empieza con `Astrid v0.3.0 | active=1 | ... | evidence=true`
    seguida de líneas `claim|...` (ver la muestra más arriba).
 4. Suite completa contra un MVM real sobre una PDB desechable — sin servicios
    externos, **20 checks** (bucle de inbox de INGEST + registro MCP):
@@ -155,8 +155,9 @@ necesita el fix de M-Light del commit `243e74c` o posterior).
 - [x] Canario de evidencia en la suite de tests (20 checks)
 - [x] Harness verificador — `tests/verify_claims.py` (AC-1..AC-4): formato de
       claims, fuentes, kinds conocidos, estabilidad ante estados idénticos
-- [ ] Anclaje de notaría — digest firmado con dirección de contenido (cid +
-      firma + libro `^EVIDENCE`) vía lumen-protocol
+- [x] Anclaje de notaría (0.3.1) — digest firmado con dirección de contenido (cid +
+      firma + libro `^EVIDENCE`) vía lumen-protocol; verificador `tests/verify_anchor.py`,
+      anclaje runtime en `poli_server._evidence_block`
 - [ ] Cableado completo de inbox standalone (bucle de agente nativo del MVM)
 
 ## Agentes hermanos
