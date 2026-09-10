@@ -21,6 +21,8 @@ fails, the failure is visible (`evidence: false`), not hidden.
 (MIT)** — protocol · PDB · M-Light/MVM · Poli+Smith · 115 MCP tools, no API
 keys. The agent repo is the door; the protocol is the house.
 
+> Part of the **tríada A·I·E**: Astrid *(is it true?)* · [Iris](https://github.com/GonzaloMonzonC/iris) *(what if…?)* · [Elena](https://github.com/GonzaloMonzonC/elena) *(what do we do — now?)* — three MIT agents, one protocol.
+
 ## What her evidence looks like
 
 A real digest (26 claims per run in production; schema v1):
@@ -30,7 +32,7 @@ Astrid v0.3.0 | active=1 | mode activo=astrid | evidence=true
 claim|mode|^ACTIVE|astrid|1
 claim|metric|^ANGI(metrics,agents_online)|{"value": 12, "updated": "..."}|1
 claim|route|^AGENTES(routing,astrid)|{"tipo": "poli", "mode": "astrid"}|1
-claim|config|^SPACE(ASI)|127.0.0.1 :9102|10
+claim|config|^SPACE(ASI)|127.0.0.1:<port>|10
 claim|counter|^QUANTUM(colapso)|119|10
 claim|note|^VIRTUAL|no existe (la virtualizacion vive en ^MVM)|0
 REGLA: responde SOLO con estos datos registrados; ...
@@ -215,3 +217,7 @@ EN is canonical for code and root docs (README, CHANGELOG, SECURITY,
 CONTRIBUTING). ES mirrors live as `.es.md` next to the English file. The
 personality card (`personalities/astrid.md`) is ES by design — it is the
 readable version of the ASCII identity line.
+
+## License
+
+MIT — Copyright (c) 2026 Gonzalo Monzón · Cadences Lab
