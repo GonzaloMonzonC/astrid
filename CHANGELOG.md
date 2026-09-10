@@ -4,6 +4,17 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the repo uses semantic
 versioning.
 
+## [0.3.2] — 2026-09-10
+
+### Docs
+- README (+ ES): **tríada A·I·E blockquote** — cross-references to her sister
+  repos ([Iris](https://github.com/GonzaloMonzonC/iris) ·
+  [Elena](https://github.com/GonzaloMonzonC/elena)).
+- README (+ ES): **License section added** (MIT) — consistent with the sister
+  repos.
+- Sample digest: internal port genericized (`127.0.0.1:<port>`) — no real
+  topology values in public docs.
+
 ## [0.3.1] — 2026-09-09
 
 ### Added
