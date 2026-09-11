@@ -3,6 +3,8 @@
 **The agent that refuses to speculate.**
 **Evidence, or silence.**
 
+**🌐 [astrid.cadences.app](https://astrid.cadences.app)** · landing EN/ES
+
 > 🇪🇸 Versión en español: [README.es.md](README.es.md)
 
 Astrid is a reference agent born inside the Poli MVM — identity, code and
