@@ -63,6 +63,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(14px);ba
 .hero::before{content:"";position:absolute;inset:-40% -20% auto -20%;height:80%;background:
   radial-gradient(600px 340px at 25% 30%,color-mix(in srgb,var(--accent) 16%,transparent),transparent 65%),
   radial-gradient(700px 400px at 75% 20%,color-mix(in srgb,var(--accent2) 13%,transparent),transparent 65%);pointer-events:none}
+.hero::after{content:"";position:absolute;top:110px;right:1.5%;width:340px;height:570px;pointer-events:none;opacity:.11;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 330 560' fill='none'%3E%3Cpath d='M105 0C185 70 185 115 105 185 25 255 25 300 105 370 185 440 185 485 105 555' stroke='%2338bdf8' stroke-width='2.4'/%3E%3Cpath d='M225 0C145 70 145 115 225 185 305 255 305 300 225 370 145 440 145 485 225 555' stroke='%2338bdf8' stroke-width='2' opacity='.55'/%3E%3Cg stroke='%237dd3fc' stroke-width='1.6' opacity='.5'%3E%3Cline x1='132' y1='60' x2='198' y2='60'/%3E%3Cline x1='98' y1='120' x2='232' y2='120'/%3E%3Cline x1='72' y1='180' x2='258' y2='180'/%3E%3Cline x1='84' y1='240' x2='246' y2='240'/%3E%3Cline x1='118' y1='300' x2='212' y2='300'/%3E%3Cline x1='140' y1='360' x2='190' y2='360'/%3E%3Cline x1='110' y1='420' x2='220' y2='420'/%3E%3Cline x1='88' y1='480' x2='242' y2='480'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}
+@media (prefers-reduced-motion: no-preference){.hero::after{animation:motifbreathe 9s ease-in-out infinite}}
+@keyframes motifbreathe{0%,100%{opacity:.08}50%{opacity:.15}}
+@media(max-width:980px){.hero::after{right:-140px;opacity:.07;animation:none}}
+h1::after{content:"";display:block;width:290px;max-width:62vw;height:12px;margin-top:18px;background:repeating-linear-gradient(90deg,color-mix(in srgb,var(--accent) 40%,transparent) 0 1.5px,transparent 1.5px 15px) left top/100% 9px no-repeat,linear-gradient(90deg,var(--accent),transparent) left bottom/100% 2px no-repeat}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
 .chip{font-size:12.5px;font-weight:600;color:var(--muted);border:1px solid var(--border2);border-radius:999px;padding:5px 12px;background:var(--panel)}
 .chip b{color:var(--accent)}
