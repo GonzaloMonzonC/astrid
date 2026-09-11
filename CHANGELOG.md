@@ -4,6 +4,17 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the repo uses semantic
 versioning.
 
+## [0.3.3] — 2026-09-11
+
+### Added
+- 🌐 **Landing site — [astrid.cadences.app](https://astrid.cadences.app)**: single-file
+  (EN/ES, theme toggle, OG card, favicon) with her personality and *her reality on LUMEN*
+  (MVM = body, PDB = memory, digest = voice, notary = proof); tríada cross-links to
+  [iris.cadences.app](https://iris.cadences.app) and [elena.cadences.app](https://elena.cadences.app).
+
+### Docs
+- README (+ ES): 🌐 landing link.
+
 ## [0.3.2] — 2026-09-10
 
 ### Docs
