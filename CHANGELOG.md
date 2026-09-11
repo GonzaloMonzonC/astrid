@@ -11,6 +11,7 @@ versioning.
   (EN/ES, theme toggle, OG card, favicon) with her personality and *her reality on LUMEN*
   (MVM = body, PDB = memory, digest = voice, notary = proof); tríada cross-links to
   [iris.cadences.app](https://iris.cadences.app) and [elena.cadences.app](https://elena.cadences.app).
+- Landing: **visual signature v1** — DNA-helix watermark (breathing) + measurement ruler under the headline.
 
 ### Docs
 - README (+ ES): 🌐 landing link.
